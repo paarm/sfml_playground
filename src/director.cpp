@@ -12,11 +12,11 @@ Director::~Director() {
 	mRootScene.deleteChilds();
 }
 
-void Director::initialize() {
+void Director::initialize(int rVirtualScreenResolutionX, int rVirtualScreenResolutionY) {
 	//init SDL2
 	//if (!SDL_Init(SDL_INIT_VIDEO)) {
 		// open window
-	mWindowHandle.mSFL_Window = new sf::RenderWindow(sf::VideoMode(640, 480), "Hello World!");
+	mWindowHandle.mSFL_Window = new sf::RenderWindow(sf::VideoMode(rVirtualScreenResolutionX, rVirtualScreenResolutionY), "Hello World!");
 	if (mWindowHandle.mSFL_Window) {
 		mWindowHandle.mSFL_Window->setVerticalSyncEnabled(true);
 		mIsInitialized=true;

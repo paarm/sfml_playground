@@ -26,6 +26,7 @@ src/texturemanager.cpp
 src/texturemanager.h 
 src/fontmanager.h
 src/fontmanager.cpp
+src/game/gameconst.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})

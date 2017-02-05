@@ -1,5 +1,6 @@
 #include <iostream>
 #include "director.h"
+#include "game/gameconst.h"
 
 //#include "res_path.h"
 
@@ -106,7 +107,7 @@ void MyScene::doUpdate(double deltaTime) {
 }
 
 int main(int, char**) {
-	Director::getInstance()->initialize();
+	Director::getInstance()->initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);
 	//TextureManager::getInstance().loadTexture("assets/cursor.png", "cursor");
 	//Director::getInstance()->setMousePointer(TextureManager::getInstance().getTexture("cursor"), MousePointerAlignment::Middle);
 	MyScene *s=new MyScene();

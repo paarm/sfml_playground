@@ -42,7 +42,7 @@ public:
 		return instance;
 	}
 	~Director();
-	void initialize();
+	void initialize(int rVirtualScreenResolutionX, int rVirtualScreenResolutionY);
 	void switchScene(Node *n);
 	void runWithNode(Node *n);
 	//void setMousePointer(SDL_Texture *rSDL_Texture, MousePointerAlignment rMousePointerAlignment=MousePointerAlignment::LeftTop);
