@@ -27,6 +27,12 @@ src/texturemanager.h
 src/fontmanager.h
 src/fontmanager.cpp
 src/game/gameconst.h
+src/game/leveldesc/levelloader.h
+src/game/leveldesc/level.h
+src/game/leveldesc/row.h
+src/game/leveldesc/column.h
+src/game/leveldesc/block.h    
+src/game/leveldesc/blocktype.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})

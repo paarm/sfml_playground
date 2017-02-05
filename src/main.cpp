@@ -1,6 +1,7 @@
 #include <iostream>
 #include "director.h"
-#include "game/gameconst.h"
+//#include "game/gameconst.h"
+#include "game/leveldesc/levelloader.h"
 
 //#include "res_path.h"
 
@@ -10,6 +11,7 @@
 
 class MyScene : public Node {
 private:
+	LevelLoader mLevelLoader;
 	Node2d *s=nullptr;
 	Node2d *s_sub=nullptr; 
 protected:
@@ -24,6 +26,7 @@ public:
 };
 
 void MyScene::init() {
+	mLevelLoader.loadLevel("Demo_Level");
 	//Sequence &walkSequence=AnimationManager::getInstance().addSequence("MAN_Walk");
 	//walkSequence.addFrame(0,0,50,50);
 	//walkSequence.addFrame(200,200,50,50);
