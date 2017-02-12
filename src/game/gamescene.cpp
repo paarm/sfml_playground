@@ -6,7 +6,7 @@ GameScene::GameScene() : Node("Game Scene") {
 } 
 
 void GameScene::init() {
-	mLevelLoader.loadLevel("Dummy");
+	mLevelLoader.loadLevel("assets/levels/testlevel.json");
 	FontContext *rFontContext=FontManager::getInstance().addFont("assets/sansation.ttf","sansation");
 	NodeText *s_text=(NodeText*)addNode(new NodeText(string ("Hello Text"), rFontContext, 10, 10));
 	s_text->setText("Hallo Welt");

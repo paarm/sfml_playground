@@ -575,6 +575,11 @@ const std::wstring &JSONValue::AsString() const
 	return (*string_value);
 }
 
+const std::wstring* JSONValue::AsStringPtr() const
+{
+	return string_value;
+}
+
 /**
  * Retrieves the Bool value of this JSONValue
  * Use IsBool() before using this method.

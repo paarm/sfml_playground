@@ -58,6 +58,7 @@ class JSONValue
 		bool IsObject() const;
 
 		const std::wstring &AsString() const;
+		const std::wstring* AsStringPtr() const;
 		bool AsBool() const;
 		double AsNumber() const;
 		const JSONArray &AsArray() const;
