@@ -1,6 +1,6 @@
 #pragma once
-#include "utils/clock.h"
 #include <SFML/Window.hpp>
+#include "clock.h"
 #include "texturemanager.h"
 #include "node.h"
 #if 0

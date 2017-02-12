@@ -1,6 +1,6 @@
 #pragma once
 #include "blocktype.h"
-#include "../../node.h"
+#include "../../engine/node.h"
 
 class Block {
 private:
