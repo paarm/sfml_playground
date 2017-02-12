@@ -15,5 +15,3 @@ enum class SpikeDirection {
 	Bottom,
 	Top
 };
-
-BlockType demoLevel[40][24] = {BlockType::Nothing};

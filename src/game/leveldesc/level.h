@@ -6,38 +6,20 @@
 using namespace std;
 class Level {
 private:
+	string 		mAssetPath="assets/";
 	string 		mLevelName="";
 	vector<Row> mRowList;
+	string		mBackgroundImageName="";
 public:
-	Row& addRow() {
-		int rRowIndex=mRowList.size();
-		Row rRow;
-		rRow.setRowIndex(rRowIndex);
-		mRowList.push_back(rRow);
-		return mRowList[rRowIndex];
-	}
-	void clearLevel() {
-		mRowList.clear();
-		mLevelName="";
-	}
-
-	void setLevelName(const string &rLevelName) {
-		mLevelName=rLevelName;
-	}
-	string& getLevelName() {
-		return mLevelName;
-	}
-	bool isRowAvailable(int rRowIndex) {
-		bool rv=false;
-		if (rRowIndex>=0 && rRowIndex<mRowList.size()) {
-			rv=true;
-		}
-		return rv;
-	}
-	Row& getRow(int rRowIndex) {
-		return mRowList[rRowIndex];
-	}
-	int getRowCount() {
-		return mRowList.size();
-	}
+	void setAssetPath(const string &rAssetPath);
+	string &getAssetPath();
+	void setBackgroundImageName(const string &rBackgroundImageName);
+	string &getBackgroundImageName();
+	Row& addRow();
+	void clearLevel();
+	void setLevelName(const string &rLevelName);
+	string& getLevelName();
+	bool isRowAvailable(int rRowIndex);
+	Row& getRow(int rRowIndex);
+	int getRowCount();
 };

@@ -1,14 +1,9 @@
 #include <iostream>
-#include "engine/director.h"
-//#include "game/gameconst.h"
-#include "game/leveldesc/levelloader.h"
+#include "game/gamedirector.h"
 
 //#include "res_path.h"
 
-/*
- * Lesson 0: Test to make sure SDL is setup properly
- */
-
+#if 0
 class MyScene : public Node {
 private:
 	LevelLoader mLevelLoader;
@@ -108,12 +103,15 @@ void MyScene::doUpdate(double deltaTime) {
 	//	Director::getInstance()->switchScene(s);
 	//}
 }
-
+#endif
 int main(int, char**) {
+	GameDirector::getInstance().run();
+#if 0
 	Director::getInstance()->initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);
 	//TextureManager::getInstance().loadTexture("assets/cursor.png", "cursor");
 	//Director::getInstance()->setMousePointer(TextureManager::getInstance().getTexture("cursor"), MousePointerAlignment::Middle);
 	MyScene *s=new MyScene();
 	Director::getInstance()->runWithNode(s);
+#endif	
 	return 0;
 }

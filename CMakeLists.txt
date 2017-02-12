@@ -14,25 +14,21 @@ find_package(SFML 2 REQUIRED system window graphics network audio)
 message(STATUS "SFML is in " ${SFML_INCLUDE_DIR})
 
 set (SOURCE 
-src/engine/director.cpp 
-src/engine/director.h 
+src/engine/director.h src/engine/director.cpp
 src/engine/clock.h 
-src/engine/node.cpp 
+src/engine/node.h src/engine/node.cpp 
 src/engine/node2d.cpp 
 src/engine/nodetext.cpp
-src/engine/node.h 
-src/engine/texturemanager.cpp
-src/engine/texturemanager.h 
-src/engine/fontmanager.h
-src/engine/fontmanager.cpp
-src/game/gameconst.h
-src/game/leveldesc/levelloader.h
-src/game/leveldesc/level.h
+src/engine/texturemanager.h src/engine/texturemanager.cpp
+src/engine/fontmanager.h src/engine/fontmanager.cpp
+src/game/leveldesc/levelloader.h src/game/leveldesc/levelloader.cpp
+src/game/leveldesc/level.h src/game/leveldesc/level.cpp
 src/game/leveldesc/row.h
 src/game/leveldesc/column.h
 src/game/leveldesc/block.h    
 src/game/leveldesc/blocktype.h
-
+src/game/gamedirector.h src/game/gamedirector.cpp
+src/game/gamescene.h src/game/gamescene.cpp
 src/main.cpp 
 )
 

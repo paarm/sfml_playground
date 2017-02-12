@@ -6,9 +6,9 @@ class Block {
 private:
 	BlockType       mBlockType;
 	SpikeDirection  mSpikeDirection;
-	Node            *mNode=nullptr;
+	Node            *mCurrentNode=nullptr;
 public:
-	Block() : mBlockType(BlockType::Nothing), mSpikeDirection(SpikeDirection::None), mNode(nullptr){}
+	Block() : mBlockType(BlockType::Nothing), mSpikeDirection(SpikeDirection::None), mCurrentNode(nullptr){}
 	void setBlockType(BlockType rBlockType) {
 		mBlockType=rBlockType;
 	}
@@ -21,7 +21,10 @@ public:
 	SpikeDirection &getSpikeDirection() {
 		return mSpikeDirection;
 	}
-	Node* getNode() {
-		return mNode;
+	void setCurrentNode(Node *rNode) {
+		mCurrentNode=rNode;
+	}
+	Node* getCurrentNode() {
+		return mCurrentNode;
 	}
 };
