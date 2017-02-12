@@ -1,7 +1,140 @@
 {
-	"xxHeader": {
+	"Header": {
 		"LevelName": "Testlevel 1",
 		"AssetPath": "assets/",
 		"BackgroundImageName": "test.png"
-	}
+	},
+	"Textures": [
+		{
+			"TextureName": 	"Testschwein",
+			"TextureFile": 	"testschwein.png"
+		}
+	],
+	"AutoFramesAndSequences": [
+		{
+			"TextureName": "Testschwein",
+			"SequenceName": "Testschwein.Walk",
+			"FrameCountX": 11,
+			"FrameCountY": 1
+		}
+	],
+	"Blocks": [
+		{
+			"Id": 					"Nothing",
+			"BlockType": 			"Nothing"
+		}, 
+		{
+			"Id": 					"FixedA",
+			"BlockType": 			"Fixed",
+			"DefaultFrame":			"Testschwein.Walk0",
+			"DefaultSequence": 		"Burn",
+			"Sequences": [
+				{
+					"PlayerName": 	"Burn",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				}
+			]			
+		},
+		{
+			"Id": 					"FixedB",
+			"BlockType": 			"Fixed",
+			"DefaultFrame":			"Testschwein.Walk0",
+			"DefaultSequence": 		"Burn",
+			"Sequences": [
+				{
+					"PlayerName": 	"Burn",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				}
+			]			
+		},
+		{
+			"Id": 					"GravityA",
+			"BlockType": 			"Gravity",
+			"DefaultFrame":			"Testschwein.Walk0",
+			"DefaultSequence": 		"Burn",
+			"Sequences": [
+				{
+					"PlayerName": 	"Burn",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				}
+			]			
+		} ,
+		{
+			"Id": 					"SpikeA",
+			"BlockType": 			"Spike",
+			"DefaultFrame":			"Testschwein.Walk0",
+			"DefaultSequence": 		"Burn",
+			"Sequences": [
+				{
+					"PlayerName": 	"Burn",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				}
+			]			
+		}		
+	],
+	"Enemies": [
+		{
+			"Id": 					"SchweinRot",
+			"DefaultFrame":			"Testschwein.Walk0",
+			"DefaultSequence": 		"Idle",
+			"Sequences": [
+				{
+					"PlayerName": 	"Idle",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				},
+				{
+					"PlayerName": 	"WalkLeft",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				},
+				{
+					"PlayerName": 	"WalkRight",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				},
+				{
+					"PlayerName": 	"MoveToTop",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				},
+				{
+					"PlayerName": 	"MoveToBottom",
+					"SequenceName": "Testschwein.Walk",
+					"FrameDelayInMs": 50
+				} 
+			]
+		}
+	],
+	"LevelField": [
+		{
+			"Blocks": [
+				{
+					"BlockId": "FixedA",
+					"RowIndex": 0,
+					"ColumnIndex": 0
+				},
+				{
+					"BlockId": "FixedB",
+					"RowIndex": 0,
+					"ColumnIndex": 1
+				},
+				{
+					"BlockId": "FixedB",
+					"RowIndex": 0,
+					"ColumnIndex": 5
+				},
+				{
+					"BlockId": "SpikeA",
+					"RowIndex": 0,
+					"ColumnIndex": 8,
+					"Direction": "Bottom"
+				}
+			]
+		}
+	]  
 }

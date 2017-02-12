@@ -14,8 +14,12 @@ private:
 	bool parseLevel(const string &rLevelName);
 	bool parseRoot(JSONValue *rJSONValueParent);
 	bool parseHeader(JSONValue *rJSONValueParent);
+	bool parseTextures(JSONValue *rJSONValueParent);
+	bool parseAutoFramesAndSequences(JSONValue *rJSONValueParent);
+
+	const string extractString(JSONValue *rJSONValueParent, const wstring &rName);
+	double extractNumber(JSONValue *rJSONValueParent, const wstring &rName);
 public:
 	bool loadLevel(const string &rLevelName);
-	const string extractString(JSONValue *rJSONValueParent, const wstring &rName);
 
 };

@@ -1,10 +1,11 @@
 #include "levelloader.h"
+#include "../../engine/texturemanager.h"
 
 using namespace std;
 bool LevelLoader::loadLevel(const string &rLevelName) {
 	bool rv=false;
 
-	parseLevel(rLevelName);
+	rv=parseLevel(rLevelName);
 #if 0
 	mLevel.clearLevel();
 	mLevel.setAssetPath("assets/");
@@ -17,7 +18,6 @@ bool LevelLoader::loadLevel(const string &rLevelName) {
 			rRow.addColumn();
 		}
 	}
-	rv=true;
 	return rv;
 }
 
@@ -31,9 +31,8 @@ bool LevelLoader::parseLevel(const string &rLevelName) {
 
 	JSONValue *rJSONValue=JSON::Parse(rFileString.c_str());
 	if (rJSONValue->IsObject()) {
-		parseRoot(rJSONValue);
+		rv=parseRoot(rJSONValue);
 	} 
-
 	return rv;
 }
 
@@ -44,6 +43,7 @@ bool LevelLoader::parseRoot(JSONValue *rJSONValueParent) {
 			cout << "Level root is no object" << endl;
 			break;
 		}
+		// Header
 		JSONValue *rHeader=rJSONValueParent->Child(L"Header");
 		if (!rHeader) {
 			cout << "Level Header not found" << endl;
@@ -52,6 +52,25 @@ bool LevelLoader::parseRoot(JSONValue *rJSONValueParent) {
 		if (!parseHeader(rHeader)) {
 			break;
 		}
+		// Textures
+		JSONValue *rTextures=rJSONValueParent->Child(L"Textures");
+		if (!rTextures) {
+			cout << "Level Textures definition not found" << endl;
+			break;
+		} 
+		if (!parseTextures(rTextures)) {
+			break;
+		}
+		// Textures AutoFramesAndSequences		
+		JSONValue *rAutoFramesAndSequences=rJSONValueParent->Child(L"AutoFramesAndSequences");
+		if (!rAutoFramesAndSequences) {
+			cout << "Level AutoFramesAndSequences definition not found" << endl;
+			break;
+		} 
+		if (!parseAutoFramesAndSequences(rAutoFramesAndSequences)) {
+			break;
+		}
+		
 		rv=true;
 	} while(false);
 	return rv;
@@ -91,11 +110,78 @@ bool LevelLoader::parseHeader(JSONValue *rJSONValueParent) {
 	return rv;
 }
 
+bool LevelLoader::parseTextures(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsArray()) {
+			cout << "Level Textures is no array" << endl;
+			break;
+		}
+		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rTextureName=extractString(rJSONValue, L"TextureName");
+			if (rTextureName.empty()) {
+				cout << "Textures.TextureName not found or empty" << endl;
+				continue;
+			}
+			string rTextureFile=extractString(rJSONValue, L"TextureFile");
+			if (rTextureName.empty()) {
+				cout << "Textures.TextureFile not found or empty" << endl;
+				continue;
+			}
+			TextureManager::getInstance().loadTexture(mLevel.getAssetPath()+rTextureFile, &rTextureName);
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
+
+bool LevelLoader::parseAutoFramesAndSequences(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsArray()) {
+			cout << "Level AutoFramesAndSequences is no array" << endl;
+			break;
+		}
+		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rTextureName=extractString(rJSONValue, L"TextureName");
+			if (rTextureName.empty()) {
+				cout << "Textures.TextureName not found or empty" << endl;
+				continue;
+			}
+			string rSequenceName=extractString(rJSONValue, L"SequenceName");
+			if (rSequenceName.empty()) {
+				cout << "AutoFramesAndSequences.SequenceName not found or empty" << endl;
+				continue;
+			}
+			int rFrameCountX=(int)extractNumber(rJSONValue, L"FrameCountX");
+			int rFrameCountY=(int)extractNumber(rJSONValue, L"FrameCountY");
+
+			TextureManager::getInstance().createAutomaticFramesAndSequence(rTextureName, rSequenceName, rFrameCountX, rFrameCountY);
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
+
+
+
 const string LevelLoader::extractString(JSONValue *rJSONValueParent, const wstring &rName) {
 	JSONValue *v=rJSONValueParent->Child(rName.c_str());
 	if (v && v->IsString()) {
 		return string(v->AsStringPtr()->begin(), v->AsStringPtr()->end());
 	}
 	return "";
+}
+
+double LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rName) {
+	JSONValue *v=rJSONValueParent->Child(rName.c_str());
+	if (v && v->IsNumber()) {
+		return v->AsNumber();
+	}
+	return 0.0;
 }
 
