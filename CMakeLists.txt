@@ -14,6 +14,8 @@ find_package(SFML 2 REQUIRED system window graphics network audio)
 message(STATUS "SFML is in " ${SFML_INCLUDE_DIR})
 
 set (SOURCE 
+thirdparty/simplejson/JSON.h thirdparty/simplejson/JSON.cpp 
+thirdparty/simplejson/JSONValue.h thirdparty/simplejson/JSONValue.cpp 
 src/engine/director.h src/engine/director.cpp
 src/engine/clock.h 
 src/engine/node.h src/engine/node.cpp 
