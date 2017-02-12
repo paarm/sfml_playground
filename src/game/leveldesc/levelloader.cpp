@@ -5,23 +5,29 @@ using namespace std;
 bool LevelLoader::loadLevel(const string &rLevelName) {
 	bool rv=false;
 
-	rv=parseLevel(rLevelName);
-#if 0
 	mLevel.clearLevel();
-	mLevel.setAssetPath("assets/");
-	mLevel.setLevelName(rLevelName);
-	mLevel.setBackgroundImageName("");
-#endif
 	for (int y=0, countY=GameDirector::getInstance().getBlockCountY();y<countY;y++) {
 		Row &rRow=mLevel.addRow();
 		for (int x=0, countX=GameDirector::getInstance().getBlockCountX();x<countX;x++) {
 			rRow.addColumn();
 		}
 	}
+	rv=parse(rLevelName);
+#if 0
+	mLevel.clearLevel();
+	mLevel.setAssetPath("assets/");
+	mLevel.setLevelName(rLevelName);
+	mLevel.setBackgroundImageName("");
+#endif
 	return rv;
 }
 
-bool LevelLoader::parseLevel(const string &rLevelName) {
+Level& LevelLoader::getLevel() {
+	return mLevel;
+}
+
+
+bool LevelLoader::parse(const string &rLevelName) {
 	bool rv=true;
 	cout << "Loading Level " << rLevelName << endl;
 
@@ -70,7 +76,24 @@ bool LevelLoader::parseRoot(JSONValue *rJSONValueParent) {
 		if (!parseAutoFramesAndSequences(rAutoFramesAndSequences)) {
 			break;
 		}
-		
+		// ObjectDescriptors
+		JSONValue *rObjectDescriptors=rJSONValueParent->Child(L"ObjectDescriptors");
+		if (!rObjectDescriptors) {
+			cout << "Level ObjectDescriptors definition not found" << endl;
+			break;
+		} 
+		if (!parseObjectDescriptors(rObjectDescriptors)) {
+			break;
+		}
+		// Level
+		JSONValue *rLevel=rJSONValueParent->Child(L"Level");
+		if (!rLevel) {
+			cout << "Level definition not found" << endl;
+			break;
+		} 
+		if (!parseLevel(rLevel)) {
+			break;
+		}
 		rv=true;
 	} while(false);
 	return rv;
@@ -98,13 +121,6 @@ bool LevelLoader::parseHeader(JSONValue *rJSONValueParent) {
 			break;
 		}
 		mLevel.setAssetPath(t);
-
-		t=extractString(rJSONValueParent, L"BackgroundImageName");
-		if (t.empty()) {
-			cout << "BackgroundImageName not found or empty" << endl;
-			break;
-		}
-		mLevel.setBackgroundImageName(t);
 		rv=true;
 	} while(false);
 	return rv;
@@ -167,6 +183,156 @@ bool LevelLoader::parseAutoFramesAndSequences(JSONValue *rJSONValueParent) {
 	return rv;
 }
 
+
+bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsArray()) {
+			cout << "Level ObjectDescriptors is no array" << endl;
+			break;
+		}
+		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rId=extractString(rJSONValue, L"Id");
+			if (rId.empty()) {
+				cout << "ObjectDescriptors.Id not found or empty" << endl;
+				continue;
+			}
+			string rObjectType=extractString(rJSONValue, L"ObjectType");
+			if (rObjectType.empty()) {
+				cout << "ObjectDescriptors.ObjectType not found or empty" << endl;
+				continue;
+			}
+			ObjectType rObjectTypeX;
+			if (rObjectType=="Fixed") {
+				rObjectTypeX=ObjectType::Fixed;
+			} else if (rObjectType=="Gravity") {
+				rObjectTypeX=ObjectType::Gravity;
+			} else if (rObjectType=="Spike") {
+				rObjectTypeX=ObjectType::Spike;
+			} else if (rObjectType=="Player") {
+				rObjectTypeX=ObjectType::Player;
+			} else if (rObjectType=="Enemy") {
+				rObjectTypeX=ObjectType::Enemy;
+			} else {
+				rObjectTypeX=ObjectType::Nothing;
+			}
+
+			string rDefaultFrame=extractString(rJSONValue, L"DefaultFrame");
+			//if (rDefaultFrame.empty()) {
+			//	cout << "ObjectDescriptors.DefaultFrame not found or empty" << endl;
+			//	continue;
+			//}
+			string rDefaultSequence=extractString(rJSONValue, L"DefaultSequence");
+			//if (rDefaultSequence.empty()) {
+			//	cout << "ObjectDescriptors.DefaultSequence not found or empty" << endl;
+			//	continue;
+			//}
+			ObjectDesc rObjectDesc;
+			rObjectDesc.setId(rId);
+			rObjectDesc.setObjectType(rObjectTypeX);
+			rObjectDesc.setDefaultFrame(rDefaultFrame);
+			rObjectDesc.setDefaultSequence(rDefaultSequence);
+		
+			JSONValue *rObjectSequences=rJSONValue->Child(L"ObjectSequences");
+			if (rObjectSequences && rObjectSequences->IsArray()) {
+				const JSONArray &rJSONArrayS=rObjectSequences->AsArray();
+				for (auto *rJSONValueS : rJSONArrayS) {
+					string rObjectSequenceName=extractString(rJSONValueS, L"ObjectSequencesName");
+					if (rObjectSequenceName.empty()) {
+						cout << "ObjectDescriptors.ObjectSequences.ObjectSequenceName not found or empty" << endl;
+						continue;
+					}
+					string rSequenceName=extractString(rJSONValueS, L"SequenceName");
+					if (rSequenceName.empty()) {
+						cout << "ObjectDescriptors.ObjectSequences.SequenceName not found or empty" << endl;
+						continue;
+					}
+					int rFrameDelayInMs=(int)extractNumber(rJSONValueS, L"FrameDelayInMs");
+					ObjectSequence rObjectSequence;
+
+					rObjectSequence.setObjectSequenceName(rObjectSequenceName);
+					rObjectSequence.setSequenceName(rSequenceName);
+					rObjectSequence.setFrameDelayInMs(rFrameDelayInMs);
+					rObjectDesc.addObjectSequence(rObjectSequence);
+				}
+			}
+			mLevel.addObjectDesc(rObjectDesc);
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
+
+bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsObject()) {
+			cout << "Level is no Object" << endl;
+			break;
+		}
+		//const JSONObject &rJSONObject=rJSONValueParent->AsObject();
+		string rBackgroundTextureName=extractString(rJSONValueParent, L"BackgroundTextureName");
+		if (rBackgroundTextureName.empty()) {
+			cout << "Level.BackgroundTextureName not found or empty" << endl;
+			break;;
+		}
+		mLevel.setBackgroundImageName(rBackgroundTextureName);
+
+		JSONValue *rBlocks=rJSONValueParent->Child(L"Blocks");
+		if (!rBlocks || !rBlocks->IsArray()) {
+			cout << "Level.Blocks not found or not an Array" << endl;
+			break;;
+		}
+
+		const JSONArray &rJSONArray=rBlocks->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rId=extractString(rJSONValue, L"Id");
+			if (rId.empty()) {
+				cout << "Lebel.Blocks.Id not found or empty" << endl;
+				continue;
+			}
+			int rRowIndex=(int)extractNumber(rJSONValue, L"RowIndex");
+			int rColumnIndex=(int)extractNumber(rJSONValue, L"ColumnIndex");
+			string rDirection=extractString(rJSONValue, L"Direction");
+
+
+			Direction rDirectionX;
+			if (rDirection=="Left") {
+				rDirectionX=Direction::Left;
+			} else if (rDirection=="Right") {
+				rDirectionX=Direction::Right;
+			} else if (rDirection=="Top") {
+				rDirectionX=Direction::Top;
+			} else if (rDirection=="Bottom") {
+				rDirectionX=Direction::Bottom;
+			} else {
+				rDirectionX=Direction::Default;
+			}
+			if (!mLevel.isRowAvailable(rRowIndex)) {
+				cout << "Lebel.Blocks.RowIndex "<<rRowIndex<< " is out of range" << endl;
+				continue;
+			}
+			Row &rRow=mLevel.getRow(rRowIndex);
+			if (!rRow.isColumnAvailable(rColumnIndex)) {
+				cout << "Lebel.Blocks.ColumnIndex "<<rColumnIndex<< " is out of range" << endl;
+				continue;
+			}
+			Column &rColumn=rRow.getColumn(rColumnIndex);
+			rColumn.setDirection(rDirectionX);
+			if (!mLevel.isObjectDescAvailable(rId)) {
+				cout << "Lebel.Blocks.Id "<<rId<< " is not available in section ObjectDescriptors.Id" << endl;
+				continue;
+			}
+			ObjectDesc& rObjectDesc=mLevel.getObjectDesc(rId);
+			rColumn.setObjectDesc(&rObjectDesc);
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
 
 
 const string LevelLoader::extractString(JSONValue *rJSONValueParent, const wstring &rName) {

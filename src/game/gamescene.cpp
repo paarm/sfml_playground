@@ -21,5 +21,37 @@ void GameScene::init() {
 	rNodeSchweinchen->activateFramePlayer("Testschwein.Walk");
 	//s_sub->addNode(new FramePlayer("Test.Walk2", textureManager.getFrameSequence("Test.Walk2"),1000, PlayerType::Forward));
 
+
+
+	Level &rLevel=mLevelLoader.getLevel();
+	for (int i=0,count=rLevel.getRowCount();i<count;i++) {
+		Row &rRow=rLevel.getRow(i);
+		for (int c=0,ccount=rRow.getColumnCount();c<ccount;c++) {
+			Column& rColumn=rRow.getColumn(c);
+			ObjectDesc *rObjectDesc=rColumn.getObjectDesc();
+			if (rObjectDesc) {
+				TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rObjectDesc->getDefaultFrame());
+				Node2d *rNode2d=nullptr;
+				if (rTextureFrame) {
+					string name=""+to_string(i)+"/"+to_string(c);
+					rNode2d=(Node2d*)addNode(new Node2d(name, rTextureFrame, c*GameDirector::getInstance().getBlockSizeX(), i*GameDirector::getInstance().getBlockSizeY()));
+					rColumn.setCurrentNode(rNode2d);
+				}
+				int acount=rObjectDesc->getObjectSequenceCount();
+				for (int a=0;a<acount;a++) {
+					const string &rName=rObjectDesc->getObjectSequenceName(a);
+					ObjectSequence &rObjectSequence=rObjectDesc->getObjectSequence(rName);
+					FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
+					if (rFrameSequence) {
+						rNode2d->addNode(new FramePlayer(rObjectSequence.getObjectSequenceName(), rFrameSequence,rObjectSequence.getFrameDelayInMs()));
+						if (rObjectDesc->getDefaultSequence()==rObjectSequence.getObjectSequenceName()) {
+							rNode2d->activateFramePlayer(rObjectDesc->getDefaultSequence());
+						}						
+					}
+				}
+			}
+		}
+	}
+
 	scheduleUpdate(true);
 }

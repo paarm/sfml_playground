@@ -27,8 +27,7 @@ src/game/leveldesc/levelloader.h src/game/leveldesc/levelloader.cpp
 src/game/leveldesc/level.h src/game/leveldesc/level.cpp
 src/game/leveldesc/row.h
 src/game/leveldesc/column.h
-src/game/leveldesc/block.h    
-src/game/leveldesc/blocktype.h
+src/game/leveldesc/objectdesc.h src/game/leveldesc/objectdesc.cpp
 src/game/gamedirector.h src/game/gamedirector.cpp
 src/game/gamescene.h src/game/gamescene.cpp
 src/main.cpp 

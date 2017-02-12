@@ -12,6 +12,7 @@ void Level::clearLevel() {
 	mRowList.clear();
 	mLevelName="";
 	mBackgroundImageName="";
+	mObjectDescMap.clear();
 }
 
 void Level::setLevelName(const string &rLevelName) {
@@ -21,6 +22,21 @@ void Level::setLevelName(const string &rLevelName) {
 string& Level::getLevelName() {
 	return mLevelName;
 }
+
+void Level::addObjectDesc(ObjectDesc &rObjectDesc) {
+	mObjectDescMap[rObjectDesc.getId()]=rObjectDesc;
+}
+bool Level::isObjectDescAvailable(const string &rId) {
+	bool rv=false;
+	if (mObjectDescMap.find(rId)!=mObjectDescMap.end()) {
+		rv=true;
+	}
+	return rv;
+}
+ObjectDesc& Level::getObjectDesc(const string &rId) {
+	return mObjectDescMap[rId];
+}
+
 
 bool Level::isRowAvailable(int rRowIndex) {
 	bool rv=false;

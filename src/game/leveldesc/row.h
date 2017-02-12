@@ -23,6 +23,14 @@ public:
 		mColumnList.push_back(rColumn);
 		return mColumnList[rColumnIndex];
 	}
+	bool isColumnAvailable(int rColumnIndex) {
+		bool rv=false;
+		if (rColumnIndex>=0 && rColumnIndex<mColumnList.size()) {
+			rv=true;
+		}
+		return rv;
+	}
+	
 	Column& getColumn(int rColumnIndex) {
 		return mColumnList[rColumnIndex];
 	}
