@@ -160,8 +160,6 @@ public:
 		return rv;
 	}
 
-	
-
     FrameSequence *addFrameSequence(const string& rSequenceName) {
         const auto &it=mFrameSequenceMap.find(rSequenceName);
         if (it!=mFrameSequenceMap.end()) {

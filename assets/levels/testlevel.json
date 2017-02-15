@@ -11,6 +11,10 @@
 		{
 			"TextureName": 	"Testschwein",
 			"TextureFile": 	"testschwein.png"
+		},
+		{
+			"TextureName": 	"Fakel",
+			"TextureFile": 	"fakel.png"
 		}
 	],
 	"AutoFramesAndSequences": [
@@ -19,13 +23,82 @@
 			"SequenceName": "Testschwein.Walk",
 			"FrameCountX": 11,
 			"FrameCountY": 1
+		},
+		{
+			"TextureName": "Fakel",
+			"SequenceName": "Fakel.Burn",
+			"FrameCountX": 9,
+			"FrameCountY": 1
 		}
+	
+	],
+	"FramesForTextures": [
+		{
+			"TextureName": "Testschwein",
+			"FrameName": "Testschwein.Mauer0",
+			"SourceX": 0,
+			"SourceY": 0,
+			"Width": 32,
+			"Height": 32
+		},
+		{
+			"TextureName": "Testschwein",
+			"FrameName": "Testschwein.Mauer1",
+			"SourceX": 64,
+			"SourceY": 0,
+			"Width": 32,
+			"Height": 32
+		}		
+	],
+	"FramesForSequences": [
+		{
+			"SequenceName": "Testschwein.WalkReversed",
+			"Frames": [
+				{
+					"FrameName": "Testschwein.Mauer0"
+				},
+				{
+					"FrameName": "Testschwein.Mauer1"
+				}
+			]
+		}		
 	],
 	"ObjectDescriptors": [
 		{
 			"Id": 					"Nothing",
 			"ObjectType": 			"Nothing"
 		}, 
+		{
+			"Id": 					"MauerA",
+			"ObjectType": 			"Fixed",
+			"DefaultFrame":			"Testschwein.Mauer0"
+		},
+		{
+			"Id": 					"FakelA",
+			"ObjectType": 			"Fixed",
+			"DefaultFrame":			"Fakel.Burn0",
+			"DefaultSequence": 		"Burn",
+			"ObjectSequences": [
+				{
+					"ObjectSequencesName": 	"Burn",
+					"SequenceName": "Fakel.Burn",
+					"FrameDelayInMs": 100
+				}
+			]			
+		},		
+		{
+			"Id": 					"MauerB",
+			"ObjectType": 			"Fixed",
+			"DefaultFrame":			"Testschwein.Mauer0",
+			"DefaultSequence": 		"Burn",
+			"ObjectSequences": [
+				{
+					"ObjectSequencesName": 	"Burn",
+					"SequenceName": "Testschwein.WalkReversed",
+					"FrameDelayInMs": 150
+				}
+			]			
+		},		
 		{
 			"Id": 					"FixedA",
 			"ObjectType": 			"Fixed",
@@ -122,12 +195,12 @@
 			},
 			{
 				"Id": "FixedB",
-				"RowIndex": 0,
+				"RowIndex": 3,
 				"ColumnIndex": 1
 			},
 			{
 				"Id": "FixedB",
-				"RowIndex": 0,
+				"RowIndex": 3,
 				"ColumnIndex": 5
 			},
 			{
@@ -135,7 +208,26 @@
 				"RowIndex": 0,
 				"ColumnIndex": 8,
 				"Direction": "Bottom"
+			},
+			{
+				"Id": "MauerA",
+				"RowIndex": 12,
+				"ColumnIndex": 0,
+				"Direction": "Bottom"
+			},
+			{
+				"Id": "MauerB",
+				"RowIndex": 13,
+				"ColumnIndex": 1,
+				"Direction": "Bottom"
+			},
+			{
+				"Id": "FakelA",
+				"RowIndex": 13,
+				"ColumnIndex": 5,
+				"Direction": "Bottom"
 			}
+			
 		]
 	}
 }

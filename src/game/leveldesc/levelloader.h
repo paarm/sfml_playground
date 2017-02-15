@@ -16,6 +16,8 @@ private:
 	bool parseHeader(JSONValue *rJSONValueParent);
 	bool parseTextures(JSONValue *rJSONValueParent);
 	bool parseAutoFramesAndSequences(JSONValue *rJSONValueParent);
+	bool parseFramesForTextures(JSONValue *rJSONValueParent);
+	bool parseFramesForSequences(JSONValue *rJSONValueParent);
 	bool parseObjectDescriptors(JSONValue *rJSONValueParent);
 	bool parseLevel(JSONValue *rJSONValueParent);
 	const string extractString(JSONValue *rJSONValueParent, const wstring &rName);

@@ -69,12 +69,24 @@ bool LevelLoader::parseRoot(JSONValue *rJSONValueParent) {
 		}
 		// Textures AutoFramesAndSequences		
 		JSONValue *rAutoFramesAndSequences=rJSONValueParent->Child(L"AutoFramesAndSequences");
-		if (!rAutoFramesAndSequences) {
-			cout << "Level AutoFramesAndSequences definition not found" << endl;
-			break;
-		} 
-		if (!parseAutoFramesAndSequences(rAutoFramesAndSequences)) {
-			break;
+		if (rAutoFramesAndSequences) {
+			if (!parseAutoFramesAndSequences(rAutoFramesAndSequences)) {
+				break;
+			}
+		}
+		// Frames for Textures FramesForTexture		
+		JSONValue *rFramesForTexture=rJSONValueParent->Child(L"FramesForTextures");
+		if (rFramesForTexture) {
+			if (!parseFramesForTextures(rFramesForTexture)) {
+				break;
+			}
+		}
+		// Frames for FramesForSequences		
+		JSONValue *rFramesForSequences=rJSONValueParent->Child(L"FramesForSequences");
+		if (rFramesForSequences) {
+			if (!parseFramesForSequences(rFramesForSequences)) {
+				break;
+			}
 		}
 		// ObjectDescriptors
 		JSONValue *rObjectDescriptors=rJSONValueParent->Child(L"ObjectDescriptors");
@@ -183,6 +195,81 @@ bool LevelLoader::parseAutoFramesAndSequences(JSONValue *rJSONValueParent) {
 	return rv;
 }
 
+bool LevelLoader::parseFramesForTextures(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsArray()) {
+			cout << "Level FramesForTextures is no array" << endl;
+			break;
+		}
+		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rTextureName=extractString(rJSONValue, L"TextureName");
+			if (rTextureName.empty()) {
+				cout << "FramesForTextures.TextureName not found or empty" << endl;
+				continue;
+			}
+			string rFrameName=extractString(rJSONValue, L"FrameName");
+			if (rFrameName.empty()) {
+				cout << "FramesForTextures.rFrameName not found or empty" << endl;
+				continue;
+			}
+			int rSourceX=(int)extractNumber(rJSONValue, L"SourceX");
+			int rSourceY=(int)extractNumber(rJSONValue, L"SourceY");
+			int rWidth=(int)extractNumber(rJSONValue, L"Width");
+			int rHeight=(int)extractNumber(rJSONValue, L"Height");
+
+			TextureManager::getInstance().addFrameToTexture(rTextureName, rFrameName, rSourceX, rSourceY, rWidth, rHeight);
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
+
+bool LevelLoader::parseFramesForSequences(JSONValue *rJSONValueParent) {
+	bool rv=false;
+
+	do {
+		if (!rJSONValueParent->IsArray()) {
+			cout << "Level FramesForSequences is no array" << endl;
+			break;
+		}
+		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
+		for (auto *rJSONValue : rJSONArray) {
+			string rSequenceName=extractString(rJSONValue, L"SequenceName");
+			if (rSequenceName.empty()) {
+				cout << "FramesForSequences.SequenceName not found or empty" << endl;
+				continue;
+			}
+			JSONValue *rFrames=rJSONValue->Child(L"Frames");
+			if (rFrames && rFrames->IsArray()) {
+				const JSONArray &rJSONArrayFrames=rFrames->AsArray();
+				for (auto *rJSONValueFrame : rJSONArrayFrames) {
+					if (!rJSONValueFrame->IsObject()) {
+						cout << "FramesForSequences.Frames.Frame not an object" << endl;
+						continue;
+					}
+					string rFrameName=extractString(rJSONValueFrame, L"FrameName");
+					if (rFrameName.empty()) {
+						cout << "FramesForSequences.Frames.Frame.FrameName not found or empty" << endl;
+						continue;
+					}
+					TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rFrameName);
+					if (!rTextureFrame) {
+						cout << "FramesForSequences.Frames.Frame.FrameName not exists in TextureManager. FrameName: "<< rFrameName << endl;
+						continue;
+					}
+					TextureManager::getInstance().addFrameSequence(rSequenceName)->addTextureFrame(rTextureFrame);
+				}
+			
+			}
+		}
+		rv=true;
+	} while(false);
+	return rv;
+}
+
 
 bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 	bool rv=false;
@@ -249,6 +336,7 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 						cout << "ObjectDescriptors.ObjectSequences.SequenceName not found or empty" << endl;
 						continue;
 					}
+					
 					int rFrameDelayInMs=(int)extractNumber(rJSONValueS, L"FrameDelayInMs");
 					ObjectSequence rObjectSequence;
 
