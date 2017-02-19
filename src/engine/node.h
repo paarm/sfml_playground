@@ -135,6 +135,7 @@ public:
 	void setRotation(float);
 	void setRotationRelative(float rAddAngle);
 	float getAngle();
+	void setOriginMiddle();
 
 	virtual NodeType getNodeType() override { return NodeType::Sprite;}
 	void setTextureFrame(TextureFrame*) override;

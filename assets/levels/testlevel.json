@@ -6,7 +6,7 @@
 	"Textures": [
 		{
 			"TextureName": 	"Background",
-			"TextureFile": 	"test.png"
+			"TextureFile": 	"testhg.png"
 		},
 		{
 			"TextureName": 	"Testschwein",
@@ -198,7 +198,7 @@
 				"LayerObjects": [
 					{
 						"ObjectName": "Background",
-						"ObjectDescId": "FixedA",
+						"ObjectDescId": "BackgroundA",
 						"PosX": 0,
 						"PosY": 0
 					}
@@ -242,7 +242,7 @@
 					},
 					{
 						"ObjectName": "FakelAXY",
-						"ObjectDescId": "FakelAxxx",
+						"ObjectDescId": "FakelA",
 						"PosX": 320,
 						"PosY": 120
 					}

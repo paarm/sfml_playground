@@ -47,8 +47,8 @@ void GameScene::init() {
 		}
 	}
 	FontContext *rFontContext=FontManager::getInstance().addFont("assets/sansation.ttf","sansation");
-	NodeText *s_text=(NodeText*)addNode(new NodeText(string ("Hello Text"), rFontContext, 10, 10));
-	s_text->setText("Hallo Welt");
+	NodeText *s_text=(NodeText*)addNode(new NodeText(string ("FramesPerSecond"), rFontContext, 10, 10));
+	s_text->setText("0");
 
 #if 0
 	Level &rLevel=mLevelLoader.getLevel();
@@ -87,11 +87,17 @@ void GameScene::init() {
 void GameScene::doUpdate(float rDelta) {
 	Node2d* rBackgroundLayer=(Node2d*)searchNode("DuMusstDichDrehen", true);
 	if (rBackgroundLayer) {
+		rBackgroundLayer->setOriginMiddle();
 		rBackgroundLayer->setRotationRelative((float)500.0*rDelta/(float)1000.0);
 	}
 	rBackgroundLayer=(Node2d*)searchNode("DuMusstVerkehrtDrehen", true);
 	if (rBackgroundLayer) {
 		rBackgroundLayer->setRotationRelative((float)-500.0*rDelta/(float)1000.0);
 		rBackgroundLayer->setPositionRelative((float)-20.0*rDelta/(float)1000.0, 0.0);
+	}
+	NodeText *s_text=(NodeText*)searchNode("FramesPerSecond", true);
+	if (s_text) {
+		s_text->setText(std::to_string((int)((1000.0/rDelta)))+" FPS");
+		//s_text->setText(std::to_string(rDelta)+" FPS");
 	}
 }

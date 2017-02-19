@@ -98,6 +98,7 @@ void Node2d::activateFramePlayer(const string &name, float rDelayInMs, PlayerTyp
 	}
 }
 
+
 bool Node2d::isFramePlayerFinish() {
 	bool rv=true;
 	if (mFramePlayer) {
@@ -152,6 +153,9 @@ void Node2d::setRotation(float rAngle) {
 	mSprite.setRotation(rAngle);
 }
 
+void Node2d::setOriginMiddle() {
+	mSprite.setOrigin(sf::Vector2f(getWidth()/2, getHeight()/2));
+}
 float Node2d::getAngle() {
 	return mSprite.getRotation();
 }
