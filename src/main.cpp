@@ -12,7 +12,7 @@ private:
 protected:
 	void init();
 	virtual void doDestroy() override;
-	virtual void doUpdate(double) override; 
+	virtual void doUpdate(float) override; 
 public:
 	MyScene() : Node("Game Scene") {
 		init();
@@ -79,7 +79,7 @@ void MyScene::doDestroy() {
 	// nothing to do
 }
 
-void MyScene::doUpdate(double deltaTime) {
+void MyScene::doUpdate(float deltaTime) {
 	//s->moveDistanceXY(0.0, 20.0*(deltaTime/1000.0));
 
 	if (s_sub) {

@@ -1,10 +1,10 @@
 #include "node.h"
 
 NodeText::NodeText(const string &name, FontContext *rFontContext, int x, int y) : Node(name) {
-	setPosition(x,y);
+	setPosition((float)x,(float)y);
 	setScale(1.0,1.0);
     mText.setString("");
-    mText.setColor(sf::Color::Red);
+    mText.setFillColor(sf::Color::Red);
     mText.setCharacterSize(24); // in pixels, not points!
 	mText.setFont(rFontContext->mFont);
     mFontContext=rFontContext;
@@ -18,20 +18,20 @@ void NodeText::drawInternal(sf::RenderTarget& target, const sf::Transform& paren
 }
 
 
-void NodeText::setPositionRelative(double distanceX, double distanceY) {
+void NodeText::setPositionRelative(float distanceX, float distanceY) {
 	mText.move(sf::Vector2f(distanceX,distanceY));
 }
 
 
-void NodeText::setPosition(double rX, double rY) {
+void NodeText::setPosition(float rX, float rY) {
 	mText.setPosition(sf::Vector2f(rX,rY));
 }
 
-double NodeText::getX() {
+float NodeText::getX() {
 	return mText.getPosition().x;
 }
 
-double NodeText::getY() {
+float NodeText::getY() {
 	return mText.getPosition().y;
 }
 #if 0
@@ -44,22 +44,22 @@ int NodeText::getWidth() {
 }
 #endif
 
-void NodeText::setScale(double rScaleX, double rScaleY) {
+void NodeText::setScale(float rScaleX, float rScaleY) {
 	mText.setScale(sf::Vector2f(rScaleX, rScaleY));
 }
 
-void NodeText::scaleRelative(double rScaleX, double rScaleY) {
+void NodeText::scaleRelative(float rScaleX, float rScaleY) {
 	mText.scale(sf::Vector2f(rScaleX, rScaleY));
 }
 
-void NodeText::setRotation(double rAngle) {
+void NodeText::setRotation(float rAngle) {
 	mText.setRotation(rAngle);
 }
 
-double NodeText::getAngle() {
+float NodeText::getAngle() {
 	return mText.getRotation();
 }
 
-void NodeText::setRotationRelative(double rAngle) {
+void NodeText::setRotationRelative(float rAngle) {
 	mText.rotate(rAngle);
 }

@@ -36,9 +36,9 @@ protected:
 	vector<Node*> *mChildToDelete=nullptr;
 
 	virtual void	drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform);
-	virtual void 	updateInternal(double deltaTime);
+	virtual void 	updateInternal(float deltaTime);
 
-	virtual void doUpdate(double deltaTime);
+	virtual void doUpdate(float deltaTime);
 	virtual void doDestroy();
 public:
 	Node(const string &name);
@@ -77,7 +77,7 @@ public:
 	void	executeDraw(sf::RenderTarget& target, const sf::Transform& parentTransform) {
 		drawInternal(target, parentTransform);
 	}
-	void 	executeUpdate(double deltaTime) {
+	void 	executeUpdate(float deltaTime) {
 		updateInternal(deltaTime);
 	}
 };
@@ -87,7 +87,7 @@ private:
 	sf::Text		mText;
 	FontContext		*mFontContext=nullptr;
 protected:
-	//virtual void updateInternal(double deltaTime) override;
+	//virtual void updateInternal(float deltaTime) override;
 	virtual void drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) override;
 public:
 	NodeText(const string &name, FontContext *rFontContext, int x, int y);
@@ -95,17 +95,17 @@ public:
 		mText.setString(rText);
 	}
 
-	double getX();
-	double getY();
+	float getX();
+	float getY();
 	//int	getWidth();
 	//int	getHeight();
-	void setPosition(double, double);
-	void setPositionRelative(double distanceX, double distanceY);
-	void setScale(double, double);
-	void scaleRelative(double, double);
-	void setRotation(double);
-	void setRotationRelative(double rAddAngle);
-	double getAngle();
+	void setPosition(float, float);
+	void setPositionRelative(float distanceX, float distanceY);
+	void setScale(float, float);
+	void scaleRelative(float, float);
+	void setRotation(float);
+	void setRotationRelative(float rAddAngle);
+	float getAngle();
 
 
 	virtual NodeType getNodeType() override { return NodeType::Text;}
@@ -118,26 +118,26 @@ private:
 	FramePlayer  *mFramePlayer=nullptr;
 	//vector<TextureFrame*> mTextureFrames;	
 protected:
-	virtual void updateInternal(double deltaTime) override;
+	virtual void updateInternal(float deltaTime) override;
 	virtual void drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) override;
 public:
 	Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y);
 	Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y, int w, int h);
-	double getX();
-	double getY();
+	float getX();
+	float getY();
 	int	getWidth();
 	int	getHeight();
-	void setPosition(double, double);
-	void setPositionRelative(double distanceX, double distanceY);
-	void setScale(double, double);
-	void scaleRelative(double, double);
-	void setRotation(double);
-	void setRotationRelative(double rAddAngle);
-	double getAngle();
+	void setPosition(float, float);
+	void setPositionRelative(float distanceX, float distanceY);
+	void setScale(float, float);
+	void scaleRelative(float, float);
+	void setRotation(float);
+	void setRotationRelative(float rAddAngle);
+	float getAngle();
 
 	virtual NodeType getNodeType() override { return NodeType::Sprite;}
 	void setTextureFrame(TextureFrame*) override;
-	void activateFramePlayer(const string &name, double rDelayInMs=-1.0, PlayerType playerType=PlayerType::None);
+	void activateFramePlayer(const string &name, float rDelayInMs=-1.0, PlayerType playerType=PlayerType::None);
 	bool isFramePlayerFinish();
 	void deactivateFramePlayer();
 };
@@ -147,13 +147,13 @@ class FramePlayer : public Node {
 private:
 	PlayerType		mPlayerType;
 	int				mCurrentFrame=0;
-	double			mDelayInMs;
+	float			mDelayInMs;
 	FrameSequence 	*mFrameSequence;
 	TextureFrame	*mCurrentTextureFrame=nullptr;
-	double 			mCurrentDelayTime=0.0;
+	float 			mCurrentDelayTime=0.0;
 	bool			mIsFinish=false;
 public:
-	FramePlayer(const string& name, FrameSequence *rFrameSequence, double rDelayInMs, PlayerType playerType=PlayerType::ForwardLoop) : Node(name) {
+	FramePlayer(const string& name, FrameSequence *rFrameSequence, float rDelayInMs, PlayerType playerType=PlayerType::ForwardLoop) : Node(name) {
 		mPlayerType=playerType;
 		mFrameSequence=rFrameSequence;
 		mDelayInMs=rDelayInMs;
@@ -172,7 +172,7 @@ public:
 	void setPlayerType(PlayerType rPlayerType) {
 		mPlayerType=rPlayerType;
 	}
-	void setDelayInMs(double rDelayInMs) {
+	void setDelayInMs(float rDelayInMs) {
 		mDelayInMs=rDelayInMs;
 	}
 
@@ -205,7 +205,7 @@ public:
 	int getLastFrameIndex() {
 		return mFrameSequence->countFrames()-1;
 	}
-	void updateFramePlayer(double deltaTime) {
+	void updateFramePlayer(float deltaTime) {
 		if (!mIsFinish) {
 			mCurrentDelayTime+=deltaTime;
 			if (mCurrentDelayTime>mDelayInMs) {

@@ -9,6 +9,10 @@ project(mysdlproject)
 
 set (CMAKE_BUILD_TYPE Debug)
 
+if(WIN32)
+    set(SFML_STATIC_LIBRARIES TRUE)
+    set(SFML_ROOT "C:/Users/Martin/Programmierung/SFML-2.4.2")
+endif()
 
 find_package(SFML 2 REQUIRED system window graphics network audio)
 message(STATUS "SFML is in " ${SFML_INCLUDE_DIR})
@@ -35,7 +39,12 @@ src/main.cpp
 
 add_executable(${PROJECT_NAME} ${SOURCE})
 include_directories(${SFML_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+else()
+    target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
+endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)

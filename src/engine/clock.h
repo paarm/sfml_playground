@@ -14,7 +14,7 @@ public:
     void tick() {
         mDelta=clock.restart();
     }
-    double getDelta() {
-        return (double)mDelta.asMilliseconds();
+    float getDelta() {
+        return (float)mDelta.asMilliseconds();
     }
 };

@@ -21,7 +21,7 @@ private:
 	bool parseObjectDescriptors(JSONValue *rJSONValueParent);
 	bool parseLevel(JSONValue *rJSONValueParent);
 	const string extractString(JSONValue *rJSONValueParent, const wstring &rName);
-	double extractNumber(JSONValue *rJSONValueParent, const wstring &rName);
+	float extractNumber(JSONValue *rJSONValueParent, const wstring &rName);
 public:
 	bool loadLevel(const string &rLevelName);
 	Level &getLevel();

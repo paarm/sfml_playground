@@ -431,10 +431,10 @@ const string LevelLoader::extractString(JSONValue *rJSONValueParent, const wstri
 	return "";
 }
 
-double LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rName) {
+float LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rName) {
 	JSONValue *v=rJSONValueParent->Child(rName.c_str());
 	if (v && v->IsNumber()) {
-		return v->AsNumber();
+		return (float)v->AsNumber();
 	}
 	return 0.0;
 }

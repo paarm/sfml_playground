@@ -40,7 +40,7 @@ ObjectDesc& Level::getObjectDesc(const string &rId) {
 
 bool Level::isRowAvailable(int rRowIndex) {
 	bool rv=false;
-	if (rRowIndex>=0 && rRowIndex<mRowList.size()) {
+	if (rRowIndex>=0 && rRowIndex<(int)mRowList.size()) {
 		rv=true;
 	}
 	return rv;

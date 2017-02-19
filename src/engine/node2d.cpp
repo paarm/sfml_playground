@@ -1,13 +1,13 @@
 #include "node.h"
 
 Node2d::Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y) : Node(name) {
-	setPosition(x,y);
+	setPosition((float)x,(float)y);
 	setScale(1.0,1.0);
 	setTextureFrame(rTextureFrame);
 }  
 
 Node2d::Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y, int w, int h) : Node2d(name, rTextureFrame, x, y) {
-	setScale((double)w/(double)mTextureFrame->mFrame.dx,(double)h/(double)mTextureFrame->mFrame.dy);
+	setScale((float)w/(float)mTextureFrame->mFrame.dx,(float)h/(float)mTextureFrame->mFrame.dy);
 }
 
 /*
@@ -66,7 +66,7 @@ void Node2d::drawInternal(sf::RenderTarget& target, const sf::Transform& parentT
 	Node::drawInternal(target, combinedTransform);
 }
 
-void Node2d::updateInternal(double deltaTime) {
+void Node2d::updateInternal(float deltaTime) {
 	if (mFramePlayer) {
 		mFramePlayer->updateFramePlayer(deltaTime);
 		setTextureFrame(mFramePlayer->getCurrentTextureFrame());
@@ -74,7 +74,7 @@ void Node2d::updateInternal(double deltaTime) {
 	Node::updateInternal(deltaTime);
 }
 
-void Node2d::activateFramePlayer(const string &name, double rDelayInMs, PlayerType playerType) {
+void Node2d::activateFramePlayer(const string &name, float rDelayInMs, PlayerType playerType) {
 	Node *n=searchNode(name);
 	if (n && n->getNodeType()==NodeType::Player) {
 		mFramePlayer=(FramePlayer*)n;
@@ -99,47 +99,47 @@ void Node2d::deactivateFramePlayer() {
 	mFramePlayer=nullptr;
 }
 
-void Node2d::setPositionRelative(double distanceX, double distanceY) {
+void Node2d::setPositionRelative(float distanceX, float distanceY) {
 	mSprite.move(sf::Vector2f(distanceX,distanceY));
 }
 
 
-void Node2d::setPosition(double rX, double rY) {
+void Node2d::setPosition(float rX, float rY) {
 	mSprite.setPosition(sf::Vector2f(rX,rY));
 }
 
-double Node2d::getX() {
+float Node2d::getX() {
 	return mSprite.getPosition().x;
 }
 
-double Node2d::getY() {
+float Node2d::getY() {
 	return mSprite.getPosition().y;
 }
 
 int Node2d::getHeight() {
-	return mTextureFrame->mFrame.dx*mSprite.getScale().x;
+	return (int)(mTextureFrame->mFrame.dx*mSprite.getScale().x);
 }
 
 int Node2d::getWidth() {
-	return mTextureFrame->mFrame.dy*mSprite.getScale().y;
+	return (int)(mTextureFrame->mFrame.dy*mSprite.getScale().y);
 }
 
-void Node2d::setScale(double rScaleX, double rScaleY) {
+void Node2d::setScale(float rScaleX, float rScaleY) {
 	mSprite.setScale(sf::Vector2f(rScaleX, rScaleY));
 }
 
-void Node2d::scaleRelative(double rScaleX, double rScaleY) {
+void Node2d::scaleRelative(float rScaleX, float rScaleY) {
 	mSprite.scale(sf::Vector2f(rScaleX, rScaleY));
 }
 
-void Node2d::setRotation(double rAngle) {
+void Node2d::setRotation(float rAngle) {
 	mSprite.setRotation(rAngle);
 }
 
-double Node2d::getAngle() {
+float Node2d::getAngle() {
 	return mSprite.getRotation();
 }
 
-void Node2d::setRotationRelative(double rAngle) {
+void Node2d::setRotationRelative(float rAngle) {
 	mSprite.rotate(rAngle);
 }

@@ -25,7 +25,7 @@ public:
 	}
 	bool isColumnAvailable(int rColumnIndex) {
 		bool rv=false;
-		if (rColumnIndex>=0 && rColumnIndex<mColumnList.size()) {
+		if (rColumnIndex>=0 && rColumnIndex<(int)mColumnList.size()) {
 			rv=true;
 		}
 		return rv;

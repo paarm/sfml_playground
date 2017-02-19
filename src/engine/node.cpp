@@ -99,9 +99,9 @@ void Node::debugPrint() {
 	}
 }
 
-void Node::doUpdate(double deltaTime) {}
+void Node::doUpdate(float deltaTime) {}
 
-void Node::updateInternal(double deltaTime) {
+void Node::updateInternal(float deltaTime) {
 	if (mChildNodes && mChildToDelete && mChildToDelete->size()>0) {
 		for (auto n : *mChildToDelete) {
 			deleteNode(n);

@@ -10,7 +10,7 @@ private:
 protected:
 	void init();
 	//virtual void doDestroy() override;
-	//virtual void doUpdate(double) override; 
+	//virtual void doUpdate(float) override; 
 public:
 	GameScene();
 	using Node::Node;

@@ -43,7 +43,7 @@ void GameScene::init() {
 					ObjectSequence &rObjectSequence=rObjectDesc->getObjectSequence(rName);
 					FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
 					if (rFrameSequence) {
-						rNode2d->addNode(new FramePlayer(rObjectSequence.getObjectSequenceName(), rFrameSequence,rObjectSequence.getFrameDelayInMs()));
+						rNode2d->addNode(new FramePlayer(rObjectSequence.getObjectSequenceName(), rFrameSequence,(float)rObjectSequence.getFrameDelayInMs()));
 						if (rObjectDesc->getDefaultSequence()==rObjectSequence.getObjectSequenceName()) {
 							rNode2d->activateFramePlayer(rObjectDesc->getDefaultSequence());
 						}						
