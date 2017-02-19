@@ -65,16 +65,21 @@
 	],
 	"ObjectDescriptors": [
 		{
-			"Id": 					"Nothing",
+			"ObjectDescId":			"BackgroundA",
+			"ObjectType": 			"Fixed",
+			"DefaultFrame":			"Background"
+		},
+		{
+			"ObjectDescId":			"Nothing",
 			"ObjectType": 			"Nothing"
 		}, 
 		{
-			"Id": 					"MauerA",
+			"ObjectDescId":			"MauerA",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Mauer0"
 		},
 		{
-			"Id": 					"FakelA",
+			"ObjectDescId":			"FakelA",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Fakel.Burn0",
 			"DefaultSequence": 		"Burn",
@@ -87,7 +92,7 @@
 			]			
 		},		
 		{
-			"Id": 					"MauerB",
+			"ObjectDescId": 		"MauerB",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Mauer0",
 			"DefaultSequence": 		"Burn",
@@ -100,7 +105,7 @@
 			]			
 		},		
 		{
-			"Id": 					"FixedA",
+			"ObjectDescId": 		"FixedA",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Burn",
@@ -113,7 +118,7 @@
 			]			
 		},
 		{
-			"Id": 					"FixedB",
+			"ObjectDescId": 		"FixedB",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Burn",
@@ -126,7 +131,7 @@
 			]			
 		},
 		{
-			"Id": 					"GravityA",
+			"ObjectDescId": 		"GravityA",
 			"ObjectType": 			"Gravity",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Burn",
@@ -139,7 +144,7 @@
 			]			
 		} ,
 		{
-			"Id": 					"SpikeA",
+			"ObjectDescId":			"SpikeA",
 			"ObjectType": 			"Spike",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Burn",
@@ -152,7 +157,7 @@
 			]			
 		},
 		{
-			"Id": 					"SchweinRot",
+			"ObjectDescId": 		"SchweinRot",
 			"ObjectType": 			"Enemy",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Idle",
@@ -186,48 +191,63 @@
 		}
 	],
 	"Level": {
-		"BackgroundTextureName": "Background",
-		"Blocks": [
+		"Layers": [
 			{
-				"Id": "FixedA",
-				"RowIndex": 0,
-				"ColumnIndex": 0
+				"LayerName": "Background",
+				"ZOrder": 0,
+				"LayerObjects": [
+					{
+						"ObjectName": "Background",
+						"ObjectDescId": "FixedA",
+						"PosX": 0,
+						"PosY": 0
+					}
+				]
 			},
 			{
-				"Id": "FixedB",
-				"RowIndex": 3,
-				"ColumnIndex": 1
-			},
-			{
-				"Id": "FixedB",
-				"RowIndex": 3,
-				"ColumnIndex": 5
-			},
-			{
-				"Id": "SpikeA",
-				"RowIndex": 0,
-				"ColumnIndex": 8,
-				"Direction": "Bottom"
-			},
-			{
-				"Id": "MauerA",
-				"RowIndex": 12,
-				"ColumnIndex": 0,
-				"Direction": "Bottom"
-			},
-			{
-				"Id": "MauerB",
-				"RowIndex": 13,
-				"ColumnIndex": 1,
-				"Direction": "Bottom"
-			},
-			{
-				"Id": "FakelA",
-				"RowIndex": 13,
-				"ColumnIndex": 5,
-				"Direction": "Bottom"
+				"LayerName": "Playfield",
+				"ZOrder": 1,
+				"GridX": 32,
+				"GridY": 32,
+				"LayerObjects": [
+					{
+						"ObjectName": "TestBlock",
+						"ObjectDescId": "FixedA",
+						"GridPosX": 1,
+						"GridPosY": 1
+					},
+					{
+						"ObjectName": "DuMusstVerkehrtDrehen",
+						"ObjectDescId": "FixedA",
+						"GridPosX": 20,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "DuMusstDichDrehen",
+						"ObjectDescId": "FixedA",
+						"GridPosX": 21,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "FakelAXY",
+						"ObjectDescId": "FakelA",
+						"GridPosX": 13,
+						"GridPosY": 5
+					},
+					{
+						"ObjectName": "FakelAXY",
+						"ObjectDescId": "FakelA",
+						"PosX": 300,
+						"PosY": 100
+					},
+					{
+						"ObjectName": "FakelAXY",
+						"ObjectDescId": "FakelAxxx",
+						"PosX": 320,
+						"PosY": 120
+					}
+				]				
 			}
-			
 		]
 	}
 }

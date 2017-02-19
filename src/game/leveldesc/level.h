@@ -3,16 +3,17 @@
 #include "row.h"
 #include <vector>
 #include "objectdesc.h"
-
+#include "layer.h"
+#include <iostream>
 
 using namespace std;
 class Level {
 private:
 	string 		mAssetPath="assets/";
 	string 		mLevelName="";
-	vector<Row> mRowList;
-	string		mBackgroundImageName="";
 	map<string, ObjectDesc> mObjectDescMap;
+	vector<Layer> mLayerList;
+	Layer		mEmptyLayer;
 public:
 	void setAssetPath(const string &rAssetPath);
 	string &getAssetPath();
@@ -22,11 +23,12 @@ public:
 	bool isObjectDescAvailable(const string &rId);
 	ObjectDesc& getObjectDesc(const string &rId);
 
-	Row& addRow();
+	Layer& getOrAddLayer(const string &rLayerName);
+	int getLayerCount();
+	Layer& getLayerFromIndex(int rIndex);
+	
+
 	void clearLevel();
 	void setLevelName(const string &rLevelName);
 	string& getLevelName();
-	bool isRowAvailable(int rRowIndex);
-	Row& getRow(int rRowIndex);
-	int getRowCount();
 };

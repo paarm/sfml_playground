@@ -22,6 +22,7 @@ private:
 	bool parseLevel(JSONValue *rJSONValueParent);
 	const string extractString(JSONValue *rJSONValueParent, const wstring &rName);
 	float extractNumber(JSONValue *rJSONValueParent, const wstring &rName);
+	float extractNumberNegIfNotFound(JSONValue *rJSONValueParent, const wstring &rName);
 public:
 	bool loadLevel(const string &rLevelName);
 	Level &getLevel();

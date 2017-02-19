@@ -6,6 +6,9 @@ bool LevelLoader::loadLevel(const string &rLevelName) {
 	bool rv=false;
 
 	mLevel.clearLevel();
+	rv=parse(rLevelName);
+	
+#if 0
 	for (int y=0, countY=GameDirector::getInstance().getBlockCountY();y<countY;y++) {
 		Row &rRow=mLevel.addRow();
 		for (int x=0, countX=GameDirector::getInstance().getBlockCountX();x<countX;x++) {
@@ -13,7 +16,6 @@ bool LevelLoader::loadLevel(const string &rLevelName) {
 		}
 	}
 	rv=parse(rLevelName);
-#if 0
 	mLevel.clearLevel();
 	mLevel.setAssetPath("assets/");
 	mLevel.setLevelName(rLevelName);
@@ -281,8 +283,8 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 		}
 		const JSONArray &rJSONArray=rJSONValueParent->AsArray();
 		for (auto *rJSONValue : rJSONArray) {
-			string rId=extractString(rJSONValue, L"Id");
-			if (rId.empty()) {
+			string rObjectDescId=extractString(rJSONValue, L"ObjectDescId");
+			if (rObjectDescId.empty()) {
 				cout << "ObjectDescriptors.Id not found or empty" << endl;
 				continue;
 			}
@@ -317,7 +319,7 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 			//	continue;
 			//}
 			ObjectDesc rObjectDesc;
-			rObjectDesc.setId(rId);
+			rObjectDesc.setId(rObjectDescId);
 			rObjectDesc.setObjectType(rObjectTypeX);
 			rObjectDesc.setDefaultFrame(rDefaultFrame);
 			rObjectDesc.setDefaultSequence(rDefaultSequence);
@@ -361,64 +363,84 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 			cout << "Level is no Object" << endl;
 			break;
 		}
-		//const JSONObject &rJSONObject=rJSONValueParent->AsObject();
-		string rBackgroundTextureName=extractString(rJSONValueParent, L"BackgroundTextureName");
-		if (rBackgroundTextureName.empty()) {
-			cout << "Level.BackgroundTextureName not found or empty" << endl;
+		JSONValue *rLayers=rJSONValueParent->Child(L"Layers");
+		if (!rLayers || !rLayers->IsArray()) {
+			cout << "Level.Layers not found or not an Array" << endl;
 			break;;
 		}
-		mLevel.setBackgroundImageName(rBackgroundTextureName);
-
-		JSONValue *rBlocks=rJSONValueParent->Child(L"Blocks");
-		if (!rBlocks || !rBlocks->IsArray()) {
-			cout << "Level.Blocks not found or not an Array" << endl;
-			break;;
-		}
-
-		const JSONArray &rJSONArray=rBlocks->AsArray();
+		const JSONArray &rJSONArray=rLayers->AsArray();
 		for (auto *rJSONValue : rJSONArray) {
-			string rId=extractString(rJSONValue, L"Id");
-			if (rId.empty()) {
-				cout << "Lebel.Blocks.Id not found or empty" << endl;
+			string rLayerName=extractString(rJSONValue, L"LayerName");
+			if (rLayerName.empty()) {
+				cout << "Lebel.Layers.LayerName not found or empty" << endl;
 				continue;
 			}
-			int rRowIndex=(int)extractNumber(rJSONValue, L"RowIndex");
-			int rColumnIndex=(int)extractNumber(rJSONValue, L"ColumnIndex");
-			string rDirection=extractString(rJSONValue, L"Direction");
+			int rZOrder=(int)extractNumber(rJSONValue, L"ZOrder");
+			int rGridX=(int)extractNumber(rJSONValue, L"GridX");
+			int rGridY=(int)extractNumber(rJSONValue, L"GridY");
+			if (rGridX<1) {
+				rGridX=1;
+			}
+			if (rGridY<1) {
+				rGridY=1;
+			}
+			Layer &rLayer=mLevel.getOrAddLayer(rLayerName);
+			JSONValue *rLayerObjects=rJSONValue->Child(L"LayerObjects");
+			if (!rLayerObjects || !rLayerObjects->IsArray()) {
+				cout << "Level.Layer.LayerObjects not found or not an Array" << endl;
+				break;;
+			}
+			const JSONArray &rLayerObjectsArray=rLayerObjects->AsArray();
+			for (auto *rJSONValueLayerObject : rLayerObjectsArray) {
+				string rObjectName=extractString(rJSONValueLayerObject, L"ObjectName");
+				if (rObjectName.empty()) {
+					cout << "Level.Layer.LayerObjects.ObjectName not found or empty" << endl;
+					continue;
+				}
+				string rObjectDescId=extractString(rJSONValueLayerObject, L"ObjectDescId");
+				if (rObjectDescId.empty()) {
+					cout << "Level.Layer.LayerObjects.ObjectDescId not found or empty" << endl;
+					continue;
+				}
+				if (!mLevel.isObjectDescAvailable(rObjectDescId)) {
+					cout << "Level.Layer.LayerObjects.ObjectDescId " << rObjectDescId <<" is not available" << endl;
+					continue;
+				}
 
-
-			Direction rDirectionX;
-			if (rDirection=="Left") {
-				rDirectionX=Direction::Left;
-			} else if (rDirection=="Right") {
-				rDirectionX=Direction::Right;
-			} else if (rDirection=="Top") {
-				rDirectionX=Direction::Top;
-			} else if (rDirection=="Bottom") {
-				rDirectionX=Direction::Bottom;
-			} else {
-				rDirectionX=Direction::Default;
+				int rGridPosX=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"GridPosX");
+				int rGridPosY=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"GridPosY");
+				int rPosX=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"PosX");
+				int rPosY=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"PosY");
+				if (rPosX==-1 && rGridPosX==-1) {
+					cout << "Level.Layer.LayerObjects.PosX or GridPosX not found" << endl;
+					continue;
+				}
+				if (rPosY==-1.0 && rGridPosY==-1.0) {
+					cout << "Level.Layer.LayerObjects.PosY or GridPosY not found" << endl;
+					continue;
+				}
+				int realPosX=0;
+				if (rPosX!=-1) {
+					realPosX=rPosX;	
+				} else {
+					realPosX=rGridPosX*rGridX;
+				}
+				int realPosY=0;
+				if (rPosY!=-1) {
+					realPosY=rPosY;	
+				} else {
+					realPosY=rGridPosY*rGridY;
+				}
+				LayerObject rLayerObject;
+				rLayerObject.setName(rObjectName);
+				rLayerObject.setObjectDescId(rObjectDescId);
+				rLayerObject.setPosX(realPosX);
+				rLayerObject.setPosY(realPosY);
+				rLayer.addLayerObject(rLayerObject);
 			}
-			if (!mLevel.isRowAvailable(rRowIndex)) {
-				cout << "Lebel.Blocks.RowIndex "<<rRowIndex<< " is out of range" << endl;
-				continue;
-			}
-			Row &rRow=mLevel.getRow(rRowIndex);
-			if (!rRow.isColumnAvailable(rColumnIndex)) {
-				cout << "Lebel.Blocks.ColumnIndex "<<rColumnIndex<< " is out of range" << endl;
-				continue;
-			}
-			Column &rColumn=rRow.getColumn(rColumnIndex);
-			rColumn.setDirection(rDirectionX);
-			if (!mLevel.isObjectDescAvailable(rId)) {
-				cout << "Lebel.Blocks.Id "<<rId<< " is not available in section ObjectDescriptors.Id" << endl;
-				continue;
-			}
-			ObjectDesc& rObjectDesc=mLevel.getObjectDesc(rId);
-			rColumn.setObjectDesc(&rObjectDesc);
 		}
 		rv=true;
-	} while(false);
+	} while(0);
 	return rv;
 }
 
@@ -437,5 +459,13 @@ float LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rNa
 		return (float)v->AsNumber();
 	}
 	return 0.0;
+}
+
+float LevelLoader::extractNumberNegIfNotFound(JSONValue *rJSONValueParent, const wstring &rName) {
+	JSONValue *v=rJSONValueParent->Child(rName.c_str());
+	if (v && v->IsNumber()) {
+		return (float)v->AsNumber();
+	}
+	return -1.0;
 }
 

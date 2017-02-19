@@ -121,6 +121,7 @@ protected:
 	virtual void updateInternal(float deltaTime) override;
 	virtual void drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) override;
 public:
+	Node2d(const string &name, int x, int y);
 	Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y);
 	Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y, int w, int h);
 	float getX();

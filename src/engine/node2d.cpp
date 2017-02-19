@@ -1,5 +1,11 @@
 #include "node.h"
 
+Node2d::Node2d(const string &name, int x, int y) : Node(name) {
+	setPosition((float)x,(float)y);
+	setScale(1.0,1.0);
+	//setTextureFrame(rTextureFrame);
+}  
+
 Node2d::Node2d(const string &name, TextureFrame *rTextureFrame, int x, int y) : Node(name) {
 	setPosition((float)x,(float)y);
 	setScale(1.0,1.0);
@@ -30,8 +36,10 @@ void Node2d::queryTextureSize() {
 }
 */
 void Node2d::setTextureFrame(TextureFrame *rTextureFrame) {
-	if (mTextureFrame==nullptr || mTextureFrame->mSDL_Texture==nullptr || rTextureFrame->mSDL_Texture!=mTextureFrame->mSDL_Texture) {
-		mSprite.setTexture(*rTextureFrame->mSDL_Texture);
+	if (rTextureFrame!=nullptr) {
+		if (mTextureFrame==nullptr || mTextureFrame->mSDL_Texture==nullptr || rTextureFrame->mSDL_Texture!=mTextureFrame->mSDL_Texture) {
+			mSprite.setTexture(*rTextureFrame->mSDL_Texture);
+		}
 	}
 	mTextureFrame=rTextureFrame;
 }
@@ -39,7 +47,9 @@ void Node2d::setTextureFrame(TextureFrame *rTextureFrame) {
 void Node2d::drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) {
 	//mSprite.setOrigin(0, 0);//mSprite.getPosition().x+mTextureFrame->mFrame.dx/2.0, mSprite.getPosition().y+mTextureFrame->mFrame.dy/2.0);
  	//if (mTextureFrame) {
-		mSprite.setTextureRect(sf::IntRect(mTextureFrame->mFrame.x, mTextureFrame->mFrame.y, mTextureFrame->mFrame.dx, mTextureFrame->mFrame.dy));
+		if (mTextureFrame) {
+			mSprite.setTextureRect(sf::IntRect(mTextureFrame->mFrame.x, mTextureFrame->mFrame.y, mTextureFrame->mFrame.dx, mTextureFrame->mFrame.dy));
+		}
 		sf::Transform combinedTransform = parentTransform * mSprite.getTransform();
 #if 0
 		mDestRect.x=mX;
@@ -117,11 +127,17 @@ float Node2d::getY() {
 }
 
 int Node2d::getHeight() {
-	return (int)(mTextureFrame->mFrame.dx*mSprite.getScale().x);
+	if (mTextureFrame) {
+		return (int)(mTextureFrame->mFrame.dx*mSprite.getScale().x);
+	}
+	return 0;
 }
 
 int Node2d::getWidth() {
-	return (int)(mTextureFrame->mFrame.dy*mSprite.getScale().y);
+	if (mTextureFrame) {
+		return (int)(mTextureFrame->mFrame.dy*mSprite.getScale().y);
+	}
+	return 0;
 }
 
 void Node2d::setScale(float rScaleX, float rScaleY) {
