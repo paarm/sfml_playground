@@ -156,6 +156,10 @@ void Node2d::setRotation(float rAngle) {
 void Node2d::setOriginMiddle() {
 	mSprite.setOrigin(sf::Vector2f(getWidth()/2, getHeight()/2));
 }
+
+void Node2d::setOriginFactor(float rOriginFactorX, float rOriginFactorY) {
+	mSprite.setOrigin(sf::Vector2f(getWidth()*rOriginFactorX, getHeight()*rOriginFactorY));
+}
 float Node2d::getAngle() {
 	return mSprite.getRotation();
 }

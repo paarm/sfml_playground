@@ -4,22 +4,6 @@
 #include <vector>
 
 using namespace std;
-enum class ObjectType {
-	Nothing=0,
-	Fixed,
-	Gravity,
-	Spike,
-	Player,
-	Enemy
-};
-
-enum class Direction {
-	Default=0,
-	Left,
-	Right,
-	Bottom,
-	Top
-};
 
 class ObjectSequence {
 private:
@@ -50,7 +34,7 @@ public:
 class ObjectDesc {
 private:
 	string 		mId;
-	ObjectType	mObjectType;
+	string		mObjectType="";
 	string		mDefaultFrame;
 	string 		mDefaultSequence;
 	map<string, ObjectSequence> mObjectSequenceMap;
@@ -59,7 +43,7 @@ public:
 	void setId(string &rId) {
 		mId=rId;
 	}
-	void setObjectType(ObjectType rObjectType) {
+	void setObjectType(string rObjectType) {
 		mObjectType=rObjectType;
 	}
 	void setDefaultFrame(string &rDefaultFrame) {
@@ -96,7 +80,7 @@ public:
 	string& getId() {
 		return mId;
 	}
-	ObjectType& getObjectType() {
+	string& getObjectType() {
 		return mObjectType;
 	}
 	string& getDefaultFrame() {

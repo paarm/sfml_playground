@@ -15,6 +15,10 @@
 		{
 			"TextureName": 	"Fakel",
 			"TextureFile": 	"fakel.png"
+		},
+		{
+			"TextureName": 	"Strip10",
+			"TextureFile": 	"strip10.png"
 		}
 	],
 	"AutoFramesAndSequences": [
@@ -28,6 +32,12 @@
 			"TextureName": "Fakel",
 			"SequenceName": "Fakel.Burn",
 			"FrameCountX": 9,
+			"FrameCountY": 1
+		},
+		{
+			"TextureName": "Strip10",
+			"SequenceName": "Strip10.Walk",
+			"FrameCountX": 10,
 			"FrameCountY": 1
 		}
 	
@@ -100,6 +110,19 @@
 				{
 					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.WalkReversed",
+					"FrameDelayInMs": 150
+				}
+			]			
+		},		
+		{
+			"ObjectDescId": 		"Strip10A",
+			"ObjectType": 			"Fixed",
+			"DefaultFrame":			"Strip10.Walk0",
+			"DefaultSequence": 		"Walk",
+			"ObjectSequences": [
+				{
+					"ObjectSequencesName": 	"Walk",
+					"SequenceName": "Strip10.Walk",
 					"FrameDelayInMs": 150
 				}
 			]			
@@ -232,7 +255,10 @@
 						"ObjectName": "FakelAXY",
 						"ObjectDescId": "FakelA",
 						"GridPosX": 13,
-						"GridPosY": 5
+						"GridPosY": 5,
+						"Rotation": 45,
+						"OriginFactorX": 0.5,
+						"OriginFactorY": 0.5
 					},
 					{
 						"ObjectName": "FakelAXY",
@@ -245,7 +271,14 @@
 						"ObjectDescId": "FakelA",
 						"PosX": 320,
 						"PosY": 120
+					},
+					{
+						"ObjectName": "Strip10Test",
+						"ObjectDescId": "Strip10A",
+						"GridPosX": 20,
+						"GridPosY": 15
 					}
+					
 				]				
 			}
 		]

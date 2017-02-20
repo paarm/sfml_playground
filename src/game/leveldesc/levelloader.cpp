@@ -289,24 +289,6 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 				continue;
 			}
 			string rObjectType=extractString(rJSONValue, L"ObjectType");
-			if (rObjectType.empty()) {
-				cout << "ObjectDescriptors.ObjectType not found or empty" << endl;
-				continue;
-			}
-			ObjectType rObjectTypeX;
-			if (rObjectType=="Fixed") {
-				rObjectTypeX=ObjectType::Fixed;
-			} else if (rObjectType=="Gravity") {
-				rObjectTypeX=ObjectType::Gravity;
-			} else if (rObjectType=="Spike") {
-				rObjectTypeX=ObjectType::Spike;
-			} else if (rObjectType=="Player") {
-				rObjectTypeX=ObjectType::Player;
-			} else if (rObjectType=="Enemy") {
-				rObjectTypeX=ObjectType::Enemy;
-			} else {
-				rObjectTypeX=ObjectType::Nothing;
-			}
 
 			string rDefaultFrame=extractString(rJSONValue, L"DefaultFrame");
 			//if (rDefaultFrame.empty()) {
@@ -320,10 +302,10 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 			//}
 			ObjectDesc rObjectDesc;
 			rObjectDesc.setId(rObjectDescId);
-			rObjectDesc.setObjectType(rObjectTypeX);
+			rObjectDesc.setObjectType(rObjectType);
 			rObjectDesc.setDefaultFrame(rDefaultFrame);
 			rObjectDesc.setDefaultSequence(rDefaultSequence);
-		
+
 			JSONValue *rObjectSequences=rJSONValue->Child(L"ObjectSequences");
 			if (rObjectSequences && rObjectSequences->IsArray()) {
 				const JSONArray &rJSONArrayS=rObjectSequences->AsArray();
@@ -407,35 +389,54 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 					continue;
 				}
 
-				int rGridPosX=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"GridPosX");
-				int rGridPosY=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"GridPosY");
-				int rPosX=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"PosX");
-				int rPosY=(int)extractNumberNegIfNotFound(rJSONValueLayerObject, L"PosY");
-				if (rPosX==-1 && rGridPosX==-1) {
+				int rGridPosX=0;
+				int rGridPosY=0;
+				int rPosX=0;
+				int rPosY=0;
+				bool rGridPosXFound=extractNumberExistAsInt(rJSONValueLayerObject, L"GridPosX", &rGridPosX);
+				bool rGridPosYFound=extractNumberExistAsInt(rJSONValueLayerObject, L"GridPosY", &rGridPosY);
+				bool rPosXFound=extractNumberExistAsInt(rJSONValueLayerObject, L"PosX", &rPosX);
+				bool rPosYFound=extractNumberExistAsInt(rJSONValueLayerObject, L"PosY", &rPosY);
+
+				if (!rGridPosXFound && !rPosXFound) {
 					cout << "Level.Layer.LayerObjects.PosX or GridPosX not found" << endl;
 					continue;
 				}
-				if (rPosY==-1.0 && rGridPosY==-1.0) {
+				if (!rGridPosYFound && !rPosYFound) {
 					cout << "Level.Layer.LayerObjects.PosY or GridPosY not found" << endl;
 					continue;
 				}
 				int realPosX=0;
-				if (rPosX!=-1) {
+				if (rPosXFound) {
 					realPosX=rPosX;	
 				} else {
 					realPosX=rGridPosX*rGridX;
 				}
 				int realPosY=0;
-				if (rPosY!=-1) {
+				if (rPosYFound) {
 					realPosY=rPosY;	
 				} else {
 					realPosY=rGridPosY*rGridY;
 				}
+				float rRotation=0;
+				if (extractNumberExist(rJSONValueLayerObject, L"Rotation", &rRotation)) {
+					if (rRotation<0 || rRotation>=360) {
+						rRotation=0;
+					}
+				}
+				float rOriginFactorX=0.0;
+				float rOriginFactorY=0.0;
+				extractNumberExist(rJSONValueLayerObject, L"OriginFactorX", &rOriginFactorX);
+				extractNumberExist(rJSONValueLayerObject, L"OriginFactorY", &rOriginFactorY);
+								
 				LayerObject rLayerObject;
 				rLayerObject.setName(rObjectName);
 				rLayerObject.setObjectDescId(rObjectDescId);
 				rLayerObject.setPosX(realPosX);
 				rLayerObject.setPosY(realPosY);
+				rLayerObject.setRotation(rRotation);
+				rLayerObject.setOriginFactorX(rOriginFactorX);
+				rLayerObject.setOriginFactorY(rOriginFactorY);
 				rLayer.addLayerObject(rLayerObject);
 			}
 		}
@@ -461,11 +462,24 @@ float LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rNa
 	return 0.0;
 }
 
-float LevelLoader::extractNumberNegIfNotFound(JSONValue *rJSONValueParent, const wstring &rName) {
+
+bool LevelLoader::extractNumberExistAsInt(JSONValue *rJSONValueParent, const wstring &rName, int *out) {
+	float tmp=0.0;
+	(*out)=0;
+	if (extractNumberExist(rJSONValueParent, rName, &tmp)) {
+		(*out)=(int)tmp;
+		return true;
+	}
+	return false;
+}
+
+bool LevelLoader::extractNumberExist(JSONValue *rJSONValueParent, const wstring &rName, float *out) {
+	(*out)=0;
 	JSONValue *v=rJSONValueParent->Child(rName.c_str());
 	if (v && v->IsNumber()) {
-		return (float)v->AsNumber();
+		(*out)=(float)v->AsNumber();
+		return true;
 	}
-	return -1.0;
+	return false;
 }
 

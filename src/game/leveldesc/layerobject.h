@@ -9,7 +9,9 @@ private:
 	string 	mObjectDescId;
 	int		mPosX=0;
 	int		mPosY=0;
-	int		mAngle=0;
+	float	mRotation=0;
+	float	mOriginFactorX=0.0;
+	float	mOriginFactorY=0.0;
 public:
 	void setName(const string &rName) {
 		mLayerObjectName=rName;
@@ -26,6 +28,15 @@ public:
 	void setPosX(int rPosX) {
 		mPosX=rPosX;
 	}
+	void setRotation(float rRotation) {
+		mRotation=rRotation;
+	}
+	void setOriginFactorX(float rOriginFactorX) {
+		mOriginFactorX=rOriginFactorX;
+	}
+	void setOriginFactorY(float rOriginFactorY) {
+		mOriginFactorY=rOriginFactorY;
+	}
 	int getPosX() {
 		return mPosX;
 	}
@@ -34,5 +45,14 @@ public:
 	}
 	int getPosY() {
 		return mPosY;
+	}
+	float getRotation() {
+		return mRotation;
+	}
+	float getOriginFactorX() {
+		return mOriginFactorX;
+	}
+	float getOriginFactorY() {
+		return mOriginFactorY;
 	}
 };

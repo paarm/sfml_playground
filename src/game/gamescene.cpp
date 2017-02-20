@@ -30,6 +30,10 @@ void GameScene::init() {
 				if (rTextureFrame) {
 					string name=rLayerObject.getLayerObjectName();
 					rNode2d=(Node2d*)rLayerNode->addNode(new Node2d(name, rTextureFrame, rLayerObject.getPosX(), rLayerObject.getPosY()));
+					if (rLayerObject.getRotation()!=0.0) {
+						rNode2d->setRotation(rLayerObject.getRotation());
+					}
+					rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
 					int acount=rObjectDesc.getObjectSequenceCount();
 					for (int a=0;a<acount;a++) {
 						const string &rName=rObjectDesc.getObjectSequenceName(a);
@@ -93,7 +97,7 @@ void GameScene::doUpdate(float rDelta) {
 	rBackgroundLayer=(Node2d*)searchNode("DuMusstVerkehrtDrehen", true);
 	if (rBackgroundLayer) {
 		rBackgroundLayer->setRotationRelative((float)-500.0*rDelta/(float)1000.0);
-		rBackgroundLayer->setPositionRelative((float)-20.0*rDelta/(float)1000.0, 0.0);
+		//rBackgroundLayer->setPositionRelative((float)-20.0*rDelta/(float)1000.0, 0.0);
 	}
 	NodeText *s_text=(NodeText*)searchNode("FramesPerSecond", true);
 	if (s_text) {

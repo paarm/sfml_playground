@@ -29,8 +29,6 @@ src/engine/texturemanager.h src/engine/texturemanager.cpp
 src/engine/fontmanager.h src/engine/fontmanager.cpp
 src/game/leveldesc/levelloader.h src/game/leveldesc/levelloader.cpp
 src/game/leveldesc/level.h src/game/leveldesc/level.cpp
-src/game/leveldesc/row.h
-src/game/leveldesc/column.h
 src/game/leveldesc/objectdesc.h src/game/leveldesc/objectdesc.cpp
 src/game/leveldesc/layer.h
 src/game/gamedirector.h src/game/gamedirector.cpp

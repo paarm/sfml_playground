@@ -4,7 +4,7 @@ NodeText::NodeText(const string &name, FontContext *rFontContext, int x, int y) 
 	setPosition((float)x,(float)y);
 	setScale(1.0,1.0);
     mText.setString("");
-    mText.setFillColor(sf::Color::Red);
+    //mText.setFillColor(sf::Color::Red);
     mText.setCharacterSize(24); // in pixels, not points!
 	mText.setFont(rFontContext->mFont);
     mFontContext=rFontContext;

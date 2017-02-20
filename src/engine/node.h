@@ -30,7 +30,7 @@ private:
 	Node 	*mParentNode=nullptr;
 	string 	mName;
 	bool 	mScheduledUpdate=false;
-	void initChildNodeList();
+	void 	initChildNodeList();
 protected:
 	vector<Node*> *mChildNodes=nullptr;
 	vector<Node*> *mChildToDelete=nullptr;
@@ -136,7 +136,7 @@ public:
 	void setRotationRelative(float rAddAngle);
 	float getAngle();
 	void setOriginMiddle();
-
+	void setOriginFactor(float rOriginFactorX, float rOriginFactorY);
 	virtual NodeType getNodeType() override { return NodeType::Sprite;}
 	void setTextureFrame(TextureFrame*) override;
 	void activateFramePlayer(const string &name, float rDelayInMs=-1.0, PlayerType playerType=PlayerType::None);
