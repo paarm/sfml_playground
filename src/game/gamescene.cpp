@@ -20,8 +20,8 @@ void GameScene::init() {
 	// add two animation player to the second sprite and activate animation player 1 for now
 	rNodeSchweinchen->addNode(new FramePlayer("Testschwein.Walk", TextureManager::getInstance().getFrameSequence("Testschwein.Walk"),50));
 	rNodeSchweinchen->activateFramePlayer("Testschwein.Walk");
-	rNodeSchweinchen->flipX(true);
-	rNodeSchweinchen->flipY(true);
+	rNodeSchweinchen->setFlipX(true);
+	rNodeSchweinchen->setFlipY(true);
 
 	FontContext *rFontContext=FontManager::getInstance().addFont("assets/sansation.ttf","sansation");
 	NodeText *s_text=(NodeText*)addNode(new NodeText(string ("FramesPerSecond"), rFontContext, 10, 10));
@@ -65,7 +65,7 @@ void GameScene::doUpdate(float rDelta) {
 	Node2d* rBackgroundLayer=(Node2d*)searchNode("DuMusstDichDrehen", true);
 	if (rBackgroundLayer) {
 		rBackgroundLayer->setOriginMiddle();
-		rBackgroundLayer->flipX(true);
+		rBackgroundLayer->setFlipX(true);
 		rBackgroundLayer->setRotationRelative((float)500.0*rDelta/(float)1000.0);
 	}
 	rBackgroundLayer=(Node2d*)searchNode("DuMusstVerkehrtDrehen", true);

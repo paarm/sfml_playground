@@ -25,6 +25,7 @@ private:
 	float extractNumber(JSONValue *rJSONValueParent, const wstring &rName);
 	bool extractNumberExist(JSONValue *rJSONValueParent, const wstring &rName, float *out);
 	bool extractNumberExistAsInt(JSONValue *rJSONValueParent, const wstring &rName, int *out);
+	bool extractBool(JSONValue *rJSONValueParent, const wstring &rName);
 public:
 	bool loadLevel(const string &rLevelName);
 	Level &getLevel();

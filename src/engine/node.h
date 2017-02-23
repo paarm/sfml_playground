@@ -143,8 +143,8 @@ public:
 	void activateFramePlayer(const string &name, float rDelayInMs=-1.0, PlayerType playerType=PlayerType::None);
 	bool isFramePlayerFinish();
 	void deactivateFramePlayer();
-	void flipX(bool rFlipX);
-	void flipY(bool rFlipY);
+	void setFlipX(bool rFlipX);
+	void setFlipY(bool rFlipY);
 };
 
 

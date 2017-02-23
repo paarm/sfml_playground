@@ -158,10 +158,10 @@ void Node2d::setRotationRelative(float rAngle) {
 	mSprite.rotate(rAngle);
 }
 
-void Node2d::flipX(bool rFlipX) {
+void Node2d::setFlipX(bool rFlipX) {
 	mFlipX=rFlipX;
 }
 
-void Node2d::flipY(bool rFlipY) {
+void Node2d::setFlipY(bool rFlipY) {
 	mFlipY=rFlipY;
 }

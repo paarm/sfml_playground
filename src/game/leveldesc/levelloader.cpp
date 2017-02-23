@@ -44,6 +44,8 @@ void LevelLoader::addLevelToNode(Node &rParentNode) {
 					if (rLayerObject.getRotation()!=0.0) {
 						rNode2d->setRotation(rLayerObject.getRotation());
 					}
+					rNode2d->setFlipX(rLayerObject.getFlipX());
+					rNode2d->setFlipY(rLayerObject.getFlipY());
 					rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
 					int acount=rObjectDesc.getObjectSequenceCount();
 					for (int a=0;a<acount;a++) {
@@ -463,6 +465,8 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				float rOriginFactorY=0.0;
 				extractNumberExist(rJSONValueLayerObject, L"OriginFactorX", &rOriginFactorX);
 				extractNumberExist(rJSONValueLayerObject, L"OriginFactorY", &rOriginFactorY);
+				bool rFlipX=extractBool(rJSONValueLayerObject, L"FlipX");
+				bool rFlipY=extractBool(rJSONValueLayerObject, L"FlipY");
 								
 				LayerObject rLayerObject;
 				rLayerObject.setName(rObjectName);
@@ -472,6 +476,8 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				rLayerObject.setRotation(rRotation);
 				rLayerObject.setOriginFactorX(rOriginFactorX);
 				rLayerObject.setOriginFactorY(rOriginFactorY);
+				rLayerObject.setFlipX(rFlipX);
+				rLayerObject.setFlipY(rFlipY);
 				rLayer.addLayerObject(rLayerObject);
 			}
 		}
@@ -497,7 +503,6 @@ float LevelLoader::extractNumber(JSONValue *rJSONValueParent, const wstring &rNa
 	return 0.0;
 }
 
-
 bool LevelLoader::extractNumberExistAsInt(JSONValue *rJSONValueParent, const wstring &rName, int *out) {
 	float tmp=0.0;
 	(*out)=0;
@@ -518,3 +523,10 @@ bool LevelLoader::extractNumberExist(JSONValue *rJSONValueParent, const wstring 
 	return false;
 }
 
+bool LevelLoader::extractBool(JSONValue *rJSONValueParent, const wstring &rName) {
+	JSONValue *v=rJSONValueParent->Child(rName.c_str());
+	if (v && v->IsBool()) {
+		return v->AsBool();
+	}
+	return false;
+}

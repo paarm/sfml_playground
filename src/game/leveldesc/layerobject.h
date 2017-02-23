@@ -12,6 +12,8 @@ private:
 	float	mRotation=0;
 	float	mOriginFactorX=0.0;
 	float	mOriginFactorY=0.0;
+	bool 	mFlipX=false;
+	bool	mFlipY=false;
 public:
 	void setName(const string &rName) {
 		mLayerObjectName=rName;
@@ -54,5 +56,17 @@ public:
 	}
 	float getOriginFactorY() {
 		return mOriginFactorY;
+	}
+	void setFlipX(bool rFlipX) {
+		mFlipX=rFlipX;
+	}
+	void setFlipY(bool rFlipY) {
+		mFlipY=rFlipY;
+	}
+	bool getFlipX() {
+		return mFlipX;
+	}
+	bool getFlipY() {
+		return mFlipY;
 	}
 };

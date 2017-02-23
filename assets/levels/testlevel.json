@@ -240,6 +240,14 @@
 						"GridPosY": 1
 					},
 					{
+						"ObjectName": "TestBlockxa",
+						"ObjectDescId": "FixedA",
+						"GridPosX": 18,
+						"GridPosY": 1,
+						"FlipX": true,
+						"FlipY": true
+					},
+					{
 						"ObjectName": "DuMusstVerkehrtDrehen",
 						"ObjectDescId": "FixedA",
 						"GridPosX": 20,
