@@ -1,8 +1,9 @@
 #pragma once
 
 #include "level.h"
-#include "../gamedirector.h"
 #include "../../../thirdparty/simplejson/JSONValue.h"
+#include "../../engine/node.h"
+#include "../../engine/texturemanager.h"
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -27,5 +28,7 @@ private:
 public:
 	bool loadLevel(const string &rLevelName);
 	Level &getLevel();
+	void addLevelToNode(Node &rParentNode);
+	
 
 };

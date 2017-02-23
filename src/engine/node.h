@@ -114,9 +114,10 @@ public:
 class Node2d : public Node {
 private:
 	sf::Sprite		mSprite;
-	TextureFrame *mTextureFrame=nullptr;
-	FramePlayer  *mFramePlayer=nullptr;
-	//vector<TextureFrame*> mTextureFrames;	
+	TextureFrame 	*mTextureFrame=nullptr;
+	FramePlayer  	*mFramePlayer=nullptr;
+	bool			mFlipX=false;
+	bool			mFlipY=false;
 protected:
 	virtual void updateInternal(float deltaTime) override;
 	virtual void drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) override;
@@ -142,6 +143,8 @@ public:
 	void activateFramePlayer(const string &name, float rDelayInMs=-1.0, PlayerType playerType=PlayerType::None);
 	bool isFramePlayerFinish();
 	void deactivateFramePlayer();
+	void flipX(bool rFlipX);
+	void flipY(bool rFlipY);
 };
 
 

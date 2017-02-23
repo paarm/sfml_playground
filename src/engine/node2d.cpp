@@ -45,34 +45,24 @@ void Node2d::setTextureFrame(TextureFrame *rTextureFrame) {
 }
 
 void Node2d::drawInternal(sf::RenderTarget& target, const sf::Transform& parentTransform) {
-	//mSprite.setOrigin(0, 0);//mSprite.getPosition().x+mTextureFrame->mFrame.dx/2.0, mSprite.getPosition().y+mTextureFrame->mFrame.dy/2.0);
- 	//if (mTextureFrame) {
-		if (mTextureFrame) {
-			mSprite.setTextureRect(sf::IntRect(mTextureFrame->mFrame.x, mTextureFrame->mFrame.y, mTextureFrame->mFrame.dx, mTextureFrame->mFrame.dy));
+	if (mTextureFrame) {
+		int x=mTextureFrame->mFrame.x;
+		int y=mTextureFrame->mFrame.y;
+		int dx=mTextureFrame->mFrame.dx;
+		int dy=mTextureFrame->mFrame.dy;
+		if (mFlipX) {
+			x=x+dx;
+			dx=-dx;
 		}
-		sf::Transform combinedTransform = parentTransform * mSprite.getTransform();
-#if 0
-		mDestRect.x=mX;
-		mDestRect.y=mY;
-		mDestRect.h=mH;
-		mDestRect.w=mW;
-#endif		
-
-/*		mSourceRect.x=mTextureFrame->mFrame.x;
-		mSourceRect.y=mTextureFrame->mFrame.y;
-		mSourceRect.h=mTextureFrame->mFrame.dx;
-		mSourceRect.w=mTextureFrame->mFrame.dy;
-*/
-		target.draw(mSprite, parentTransform);
-#if 0
-		if (mAngle==0.0) {
-			SDL_RenderCopy(rSDL_Renderer, mTextureFrame->mSDL_Texture, &mSourceRect, &mDestRect);
-		} else {
-			SDL_RenderCopyEx(rSDL_Renderer, mTextureFrame->mSDL_Texture, &mSourceRect, &mDestRect, mAngle, nullptr, SDL_FLIP_NONE);
+		if (mFlipY) {
+			y=y+dy;
+			dy=-dy;
 		}
-#endif		
-	//}
-	// draw the childs
+		mSprite.setTextureRect(sf::IntRect(x, y, dx, dy));
+	}
+	sf::Transform combinedTransform = parentTransform * mSprite.getTransform();
+	target.draw(mSprite, parentTransform);
+	// draw the childs with the combinedTransform matrix as parent matrix
 	Node::drawInternal(target, combinedTransform);
 }
 
@@ -166,4 +156,12 @@ float Node2d::getAngle() {
 
 void Node2d::setRotationRelative(float rAngle) {
 	mSprite.rotate(rAngle);
+}
+
+void Node2d::flipX(bool rFlipX) {
+	mFlipX=rFlipX;
+}
+
+void Node2d::flipY(bool rFlipY) {
+	mFlipY=rFlipY;
 }

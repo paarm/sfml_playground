@@ -1,5 +1,4 @@
 #include "levelloader.h"
-#include "../../engine/texturemanager.h"
 
 using namespace std;
 bool LevelLoader::loadLevel(const string &rLevelName) {
@@ -28,6 +27,42 @@ Level& LevelLoader::getLevel() {
 	return mLevel;
 }
 
+void LevelLoader::addLevelToNode(Node &rParentNode) {
+	Level &rLevel=getLevel();
+	for (int i=0, count=rLevel.getLayerCount();i<count;i++) {
+		Layer &rLayer=rLevel.getLayerFromIndex(i);
+		if (rLayer.getLayerName().length()>0) {
+			Node2d *rLayerNode=(Node2d*)rParentNode.addNode(new Node2d(rLayer.getLayerName(), 0,0));
+			for (int o=0, counto=rLayer.getLayerObjectCount();o<counto;o++) {
+				LayerObject& rLayerObject=rLayer.getLayerObjectByIndex(o);
+				ObjectDesc &rObjectDesc=rLevel.getObjectDesc(rLayerObject.getObjectDescId());
+				TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rObjectDesc.getDefaultFrame());
+				Node2d *rNode2d=nullptr;
+				if (rTextureFrame) {
+					string name=rLayerObject.getLayerObjectName();
+					rNode2d=(Node2d*)rLayerNode->addNode(new Node2d(name, rTextureFrame, rLayerObject.getPosX(), rLayerObject.getPosY()));
+					if (rLayerObject.getRotation()!=0.0) {
+						rNode2d->setRotation(rLayerObject.getRotation());
+					}
+					rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
+					int acount=rObjectDesc.getObjectSequenceCount();
+					for (int a=0;a<acount;a++) {
+						const string &rName=rObjectDesc.getObjectSequenceName(a);
+						ObjectSequence &rObjectSequence=rObjectDesc.getObjectSequence(rName);
+						FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
+						if (rFrameSequence) {
+							rNode2d->addNode(new FramePlayer(rObjectSequence.getObjectSequenceName(), rFrameSequence,(float)rObjectSequence.getFrameDelayInMs()));
+							if (rObjectDesc.getDefaultSequence()==rObjectSequence.getObjectSequenceName()) {
+								rNode2d->activateFramePlayer(rObjectDesc.getDefaultSequence());
+							}						
+						}
+					}
+				}
+			}
+		}
+	}
+	
+}
 
 bool LevelLoader::parse(const string &rLevelName) {
 	bool rv=true;
