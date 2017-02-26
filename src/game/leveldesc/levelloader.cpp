@@ -27,36 +27,42 @@ Level& LevelLoader::getLevel() {
 	return mLevel;
 }
 
+
 void LevelLoader::addLevelToNode(Node &rParentNode) {
 	Level &rLevel=getLevel();
 	for (int i=0, count=rLevel.getLayerCount();i<count;i++) {
 		Layer &rLayer=rLevel.getLayerFromIndex(i);
-		if (rLayer.getLayerName().length()>0) {
+		if (rLayer.isValid()) {
 			Node2d *rLayerNode=(Node2d*)rParentNode.addNode(new Node2d(rLayer.getLayerName(), 0,0));
 			for (int o=0, counto=rLayer.getLayerObjectCount();o<counto;o++) {
 				LayerObject& rLayerObject=rLayer.getLayerObjectByIndex(o);
-				ObjectDesc &rObjectDesc=rLevel.getObjectDesc(rLayerObject.getObjectDescId());
-				TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rObjectDesc.getDefaultFrame());
-				Node2d *rNode2d=nullptr;
-				if (rTextureFrame) {
-					string name=rLayerObject.getLayerObjectName();
-					rNode2d=(Node2d*)rLayerNode->addNode(new Node2d(name, rTextureFrame, rLayerObject.getPosX(), rLayerObject.getPosY()));
-					if (rLayerObject.getRotation()!=0.0) {
-						rNode2d->setRotation(rLayerObject.getRotation());
-					}
-					rNode2d->setFlipX(rLayerObject.getFlipX());
-					rNode2d->setFlipY(rLayerObject.getFlipY());
-					rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
-					int acount=rObjectDesc.getObjectSequenceCount();
-					for (int a=0;a<acount;a++) {
-						const string &rName=rObjectDesc.getObjectSequenceName(a);
-						ObjectSequence &rObjectSequence=rObjectDesc.getObjectSequence(rName);
-						FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
-						if (rFrameSequence) {
-							rNode2d->addNode(new FramePlayer(rObjectSequence.getObjectSequenceName(), rFrameSequence,(float)rObjectSequence.getFrameDelayInMs()));
-							if (rObjectDesc.getDefaultSequence()==rObjectSequence.getObjectSequenceName()) {
-								rNode2d->activateFramePlayer(rObjectDesc.getDefaultSequence());
-							}						
+				if (rLayerObject.isValid()) {
+					ObjectDesc &rObjectDesc=rLevel.getObjectDescByName(rLayerObject.getObjectDescId());
+					if (rObjectDesc.isValid()) {
+						TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rObjectDesc.getDefaultFrame());
+						Node2d *rNode2d=nullptr;
+						if (rTextureFrame) {
+							string name=rLayerObject.getLayerObjectName();
+							rNode2d=(Node2d*)rLayerNode->addNode(new Node2d(name, rTextureFrame, rLayerObject.getPosX(), rLayerObject.getPosY()));
+							if (rLayerObject.getRotation()!=0.0) {
+								rNode2d->setRotation(rLayerObject.getRotation());
+							}
+							rNode2d->setFlipX(rLayerObject.getFlipX());
+							rNode2d->setFlipY(rLayerObject.getFlipY());
+							rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
+							int acount=rObjectDesc.getObjectSequenceCount();
+							for (int a=0;a<acount;a++) {
+								ObjectSequence &rObjectSequence=rObjectDesc.getObjectSequenceByIndex(a);
+								if (rObjectSequence.isValid()) {
+									FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
+									if (rFrameSequence) {
+										rNode2d->addNode(new FramePlayer(rObjectSequence.getSequenceName(), rFrameSequence,(float)rObjectSequence.getFrameDelayInMs()));
+										if (rObjectDesc.getDefaultSequenceName()==rObjectSequence.getSequenceName()) {
+											rNode2d->activateFramePlayer(rObjectDesc.getDefaultSequenceName());
+										}						
+									}
+								}
+							}
 						}
 					}
 				}
@@ -72,7 +78,7 @@ bool LevelLoader::parse(const string &rLevelName) {
 
 	ifstream rFileStream(rLevelName);
 	string rFileString((istreambuf_iterator<char>(rFileStream)), istreambuf_iterator<char>());
-	cout << rFileString <<endl;
+	//cout << rFileString <<endl;
 
 	JSONValue *rJSONValue=JSON::Parse(rFileString.c_str());
 	if (rJSONValue->IsObject()) {
@@ -309,7 +315,6 @@ bool LevelLoader::parseFramesForSequences(JSONValue *rJSONValueParent) {
 	return rv;
 }
 
-
 bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 	bool rv=false;
 
@@ -337,37 +342,38 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 			//	cout << "ObjectDescriptors.DefaultSequence not found or empty" << endl;
 			//	continue;
 			//}
-			ObjectDesc rObjectDesc;
-			rObjectDesc.setId(rObjectDescId);
+			ObjectDesc &rObjectDesc=mLevel.getOrAddObjectDesc(rObjectDescId);
+			if (!rObjectDesc.isValid()) {
+				cout << "ObjectDescriptors.Id not found or empty" << endl;
+				continue;
+			}
 			rObjectDesc.setObjectType(rObjectType);
 			rObjectDesc.setDefaultFrame(rDefaultFrame);
-			rObjectDesc.setDefaultSequence(rDefaultSequence);
 
 			JSONValue *rObjectSequences=rJSONValue->Child(L"ObjectSequences");
 			if (rObjectSequences && rObjectSequences->IsArray()) {
 				const JSONArray &rJSONArrayS=rObjectSequences->AsArray();
 				for (auto *rJSONValueS : rJSONArrayS) {
-					string rObjectSequenceName=extractString(rJSONValueS, L"ObjectSequencesName");
-					if (rObjectSequenceName.empty()) {
-						cout << "ObjectDescriptors.ObjectSequences.ObjectSequenceName not found or empty" << endl;
-						continue;
-					}
 					string rSequenceName=extractString(rJSONValueS, L"SequenceName");
 					if (rSequenceName.empty()) {
 						cout << "ObjectDescriptors.ObjectSequences.SequenceName not found or empty" << endl;
 						continue;
 					}
-					
+			
 					int rFrameDelayInMs=(int)extractNumber(rJSONValueS, L"FrameDelayInMs");
-					ObjectSequence rObjectSequence;
-
-					rObjectSequence.setObjectSequenceName(rObjectSequenceName);
-					rObjectSequence.setSequenceName(rSequenceName);
-					rObjectSequence.setFrameDelayInMs(rFrameDelayInMs);
-					rObjectDesc.addObjectSequence(rObjectSequence);
+					ObjectSequence &rObjectSequence=rObjectDesc.getOrAddObjectSequence(rSequenceName);
+					if (rObjectSequence.isValid()) {
+						rObjectSequence.setFrameDelayInMs(rFrameDelayInMs);
+					}
 				}
 			}
-			mLevel.addObjectDesc(rObjectDesc);
+			if (!rDefaultSequence.empty()) {
+				if (rObjectDesc.getObjectSequenceByName(rDefaultSequence).isValid()) {
+					rObjectDesc.setDefaultSequence(rDefaultSequence);
+				} else {
+					cout << "ObjectDescriptors.ObjectSequences.DefaultSequence "<< rDefaultSequence <<" not available" << endl;
+				}
+			}
 		}
 		rv=true;
 	} while(false);
@@ -404,6 +410,10 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				rGridY=1;
 			}
 			Layer &rLayer=mLevel.getOrAddLayer(rLayerName);
+			if (!rLayer.isValid()) {
+				cout << "Lebel.Layers.LayerName could not constructed. LayerName not found or empty" << endl;
+				continue;
+			}
 			JSONValue *rLayerObjects=rJSONValue->Child(L"LayerObjects");
 			if (!rLayerObjects || !rLayerObjects->IsArray()) {
 				cout << "Level.Layer.LayerObjects not found or not an Array" << endl;
@@ -468,17 +478,17 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				bool rFlipX=extractBool(rJSONValueLayerObject, L"FlipX");
 				bool rFlipY=extractBool(rJSONValueLayerObject, L"FlipY");
 								
-				LayerObject rLayerObject;
-				rLayerObject.setName(rObjectName);
-				rLayerObject.setObjectDescId(rObjectDescId);
-				rLayerObject.setPosX(realPosX);
-				rLayerObject.setPosY(realPosY);
-				rLayerObject.setRotation(rRotation);
-				rLayerObject.setOriginFactorX(rOriginFactorX);
-				rLayerObject.setOriginFactorY(rOriginFactorY);
-				rLayerObject.setFlipX(rFlipX);
-				rLayerObject.setFlipY(rFlipY);
-				rLayer.addLayerObject(rLayerObject);
+				LayerObject& rLayerObject=rLayer.getOrAddLayerObject(rObjectName);
+				if (rLayerObject.isValid()) {
+					rLayerObject.setObjectDescId(rObjectDescId);
+					rLayerObject.setPosX(realPosX);
+					rLayerObject.setPosY(realPosY);
+					rLayerObject.setRotation(rRotation);
+					rLayerObject.setOriginFactorX(rOriginFactorX);
+					rLayerObject.setOriginFactorY(rOriginFactorY);
+					rLayerObject.setFlipX(rFlipX);
+					rLayerObject.setFlipY(rFlipY);
+				}
 			}
 		}
 		rv=true;

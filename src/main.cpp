@@ -104,7 +104,64 @@ void MyScene::doUpdate(float deltaTime) {
 	//}
 }
 #endif
+#include <vector>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+class Test {
+	string mName="";
+public:
+	Test() {
+		cout << "** Constructor called" << endl;
+	}
+	Test(const char *rName) {
+		mName=rName;
+		cout << "** Constructor called" << endl;
+	}
+	Test(const Test &rhs) {
+		mName=rhs.mName;
+		cout << "*** Copy constructor called" << endl;
+	}
+#if 0
+	// move constructor
+	Test(Test &&rvalueref) {
+		mName=move(rvalueref.mName);
+		cout << "*** Move constructor called" << endl;
+	}
+	Test& operator=(Test &&rvalueref) {
+		cout << "*** Move assignment operator called" << endl;
+		this->mName=move(rvalueref.mName);	
+		return *this;
+	}
+	~Test() {
+		cout << "-- Destructor called" << endl;
+	}
+#endif	
+	string& getName() {
+		return mName;
+	}
+};
+
 int main(int, char**) {
+	//vector<Test> rTestVector;
+#if 0
+	Test rTest("Martin P.");
+	{
+		Test x;
+		x=move(rTest);
+		//x.getName()[0]='H';
+	}
+	//Test &refTest=rTest;
+	//Test r=move(refTest);
+	//Test x=move(rTest);
+	//rTestVector.emplace_back(Test("Hallo vvvv"));
+
+	cout <<"name ist " << string(rTest.getName()) <<endl;
+#endif
+	Test x("Hallo");
+	Test y(static_cast<Test&&>(x));
+	cout << "x="<<x.getName() << " und y=" <<y.getName() <<endl;
+
 	GameDirector::getInstance().run();
 #if 0
 	Director::getInstance()->initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);

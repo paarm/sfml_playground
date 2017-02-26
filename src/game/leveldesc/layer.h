@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "layerobject.h"
+#include <algorithm>
 using namespace std;
 
 class Layer {
@@ -9,11 +10,13 @@ private:
 	string  mLayerName;
 	int     mZOrder=0;
 	vector<LayerObject> mLayerObjectList;
-	map<string, LayerObject*> mLayerObjectNameMap;
-	LayerObject	mEmptyLayerObject;
+	LayerObject	mEmptyLayerObject{""};
 public:
-	void setLayerName(const string& rLayerName) {
+	Layer(const string& rLayerName) {
 		mLayerName=rLayerName;
+	}
+	bool isValid() {
+		return !mLayerName.empty();
 	}
 	const string& getLayerName() {
 		return mLayerName;
@@ -25,16 +28,21 @@ public:
 		return mZOrder;
 	}
 
-	void addLayerObject(LayerObject &rLayerObject) {
-		mLayerObjectList.push_back(rLayerObject);
-		if (rLayerObject.getLayerObjectName().length()>0) {
-			mLayerObjectNameMap[rLayerObject.getLayerObjectName()]=&mLayerObjectList[mLayerObjectList.size()-1];
+	LayerObject& getOrAddLayerObject(string &rLayerObjectName) {
+		LayerObject &rLayerObjectExist=getLayerObjectByLayerObjectName(rLayerObjectName);
+		if (!rLayerObjectName.empty() && !rLayerObjectExist.isValid()) {
+			mLayerObjectList.emplace_back(rLayerObjectName);
+			return mLayerObjectList.back();
 		}
+		return rLayerObjectExist;
 	}
+
 	LayerObject& getLayerObjectByLayerObjectName(string &rLayerObjectName) {
-		auto r=mLayerObjectNameMap.find(rLayerObjectName);
-		if (r!=mLayerObjectNameMap.end()) {
-			return *r->second;
+		auto r=find_if(mLayerObjectList.begin(), mLayerObjectList.end(), [&rLayerObjectName] (LayerObject &r) {
+			return r.getLayerObjectName()==rLayerObjectName;
+		});
+		if (r!=mLayerObjectList.end()) {
+			return *r;
 		}
 		return mEmptyLayerObject;
 	}
@@ -42,11 +50,13 @@ public:
 	int getLayerObjectCount() {
 		return mLayerObjectList.size();
 	}
+
 	LayerObject& getLayerObjectByIndex(int rIndex) {
+		LayerObject& rv=mEmptyLayerObject;
 		if ((int)mLayerObjectList.size()>rIndex && rIndex>=0) {
-			return mLayerObjectList[rIndex];
+			rv=mLayerObjectList[rIndex];
 		}
-		return mEmptyLayerObject;
+		return rv;
 	}
 };
 

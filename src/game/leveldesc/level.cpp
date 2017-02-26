@@ -14,9 +14,16 @@ string& Level::getLevelName() {
 	return mLevelName;
 }
 
-void Level::addObjectDesc(ObjectDesc &rObjectDesc) {
-	mObjectDescMap[rObjectDesc.getId()]=rObjectDesc;
+ObjectDesc& Level::getOrAddObjectDesc(const string& rId) {
+	ObjectDesc &rObjectDescExist=getObjectDescByName(rId);
+	if (!rObjectDescExist.isValid() && !rId.empty()) {
+		return mObjectDescMap.emplace(rId, rId).first->second;
+		//auto y=x.first;
+		//return y->second;
+	}
+	return rObjectDescExist;
 }
+
 bool Level::isObjectDescAvailable(const string &rId) {
 	bool rv=false;
 	if (mObjectDescMap.find(rId)!=mObjectDescMap.end()) {
@@ -24,8 +31,13 @@ bool Level::isObjectDescAvailable(const string &rId) {
 	}
 	return rv;
 }
-ObjectDesc& Level::getObjectDesc(const string &rId) {
-	return mObjectDescMap[rId];
+
+ObjectDesc& Level::getObjectDescByName(const string &rId) {
+	auto it=mObjectDescMap.find(rId);
+	if (it!=mObjectDescMap.end()) {
+		return it->second;
+	}
+	return mEmptyObjectDesc;
 }
 
 void Level::setAssetPath(const string &rAssetPath) {
@@ -36,18 +48,25 @@ string &Level::getAssetPath() {
 }
 
 Layer& Level::getOrAddLayer(const string &rLayerName) {
-	auto foundIterator=find_if(mLayerList.begin(), mLayerList.end(), [rLayerName] (Layer& r) -> bool {
+	Layer &existLayer=getLayerByName(rLayerName);
+	if (!rLayerName.empty() && !existLayer.isValid()) {
+		mLayerList.emplace_back(rLayerName);
+		return mLayerList.back();
+	}
+	return existLayer;
+}
+
+Layer& Level::getLayerByName(const string &rLayerName) {
+	auto foundIterator=find_if(mLayerList.begin(), mLayerList.end(), [&rLayerName] (Layer& r) {
 		//cout <<"Lambda Layer Name: " << r.getLayerName() << "Name: "<< rLayerName <<endl;
-		return rLayerName.compare(r.getLayerName())==0;
+		return rLayerName==r.getLayerName();
 	});
 	if (foundIterator!=mLayerList.end()) { 
 		return *foundIterator;
 	}
-	Layer rLayer;
-	rLayer.setLayerName(rLayerName);
-	mLayerList.push_back(rLayer);
-	return mLayerList[mLayerList.size()-1];
+	return mEmptyLayer;
 }
+
 
 int Level::getLayerCount() {
 	return mLayerList.size();

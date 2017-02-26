@@ -2,26 +2,23 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 class ObjectSequence {
 private:
-	string 		mObjectSequenceName;
 	string		mSequenceName;
 	int			mFrameDelayInMs;
 public:
-	string& getObjectSequenceName() {
-		return mObjectSequenceName;
+	ObjectSequence(const string& rSequenceName) {
+		mSequenceName=rSequenceName;
 	}
-	void setObjectSequenceName(string &rObjectSequenceName) {
-		mObjectSequenceName=rObjectSequenceName;
+	bool isValid() {
+		return !mSequenceName.empty();
 	}
 	string& getSequenceName() {
 		return mSequenceName;
-	}
-	void setSequenceName(string &rSequenceName) {
-		mSequenceName=rSequenceName;
 	}
 	int getFrameDelayInMs() {
 		return mFrameDelayInMs;
@@ -36,12 +33,15 @@ private:
 	string 		mId;
 	string		mObjectType="";
 	string		mDefaultFrame;
-	string 		mDefaultSequence;
-	map<string, ObjectSequence> mObjectSequenceMap;
-	vector<string> mObjectSequenceNamesVector;
+	string 		mDefaultSequenceName;
+	vector<ObjectSequence> mObjectSequenceList;
+	ObjectSequence mEmptyObjectSequence={""};
 public:
-	void setId(string &rId) {
+	ObjectDesc(const string& rId) {
 		mId=rId;
+	}
+	bool isValid() {
+		return !mId.empty();
 	}
 	void setObjectType(string rObjectType) {
 		mObjectType=rObjectType;
@@ -49,32 +49,37 @@ public:
 	void setDefaultFrame(string &rDefaultFrame) {
 		mDefaultFrame=rDefaultFrame;
 	}
-	void setDefaultSequence(string &rDefaultSequence) {
-		mDefaultSequence=rDefaultSequence;
+	void setDefaultSequence(string &rDefaultSequenceName) {
+		mDefaultSequenceName=rDefaultSequenceName;
 	}
-	void addObjectSequence(ObjectSequence &rObjectSequence) {
-		const string &key=rObjectSequence.getObjectSequenceName();
-		mObjectSequenceMap[key]=ObjectSequence(rObjectSequence);
-		mObjectSequenceNamesVector.push_back(key);
+	ObjectSequence& getOrAddObjectSequence(const string &rSequenceName) {
+		ObjectSequence& rObjectSequenceExist=getObjectSequenceByName(rSequenceName);
+		if (!rSequenceName.empty() && !rObjectSequenceExist.isValid()) {
+			mObjectSequenceList.emplace_back(rSequenceName);
+			return mObjectSequenceList.back();
+		}
+		return rObjectSequenceExist;
 	}
 
-	bool isObjectSequenceAvailable(const string &rObjectSequenceName) {
-		bool rv=false;
-		if (mObjectSequenceMap.find(rObjectSequenceName)!=mObjectSequenceMap.end()) {
-			rv=true;
+	ObjectSequence &getObjectSequenceByName(const string &sequenceName) {
+		auto it=std::find_if(mObjectSequenceList.begin(), mObjectSequenceList.end(), [&sequenceName](ObjectSequence &r) {
+			return r.getSequenceName()==sequenceName;
+		});
+		if (it!=mObjectSequenceList.end()) {
+			return *it;
 		}
-		return rv;
+		return mEmptyObjectSequence;
 	}
-	ObjectSequence &getObjectSequence(const string &rObjectSequenceName) {
-		return mObjectSequenceMap[rObjectSequenceName];
+
+	ObjectSequence &getObjectSequenceByIndex(int rIndex) {
+		if (mObjectSequenceList.size()>rIndex && rIndex>=0) {
+			return mObjectSequenceList.at(rIndex);
+		}
+		return mEmptyObjectSequence;
 	}
 
 	int getObjectSequenceCount() {
-		return mObjectSequenceNamesVector.size();
-	}
-
-	const string& getObjectSequenceName(int rIndex) {
-		return mObjectSequenceNamesVector[rIndex];
+		return mObjectSequenceList.size();
 	}
 
 	string& getId() {
@@ -86,7 +91,7 @@ public:
 	string& getDefaultFrame() {
 		return mDefaultFrame;
 	}
-	string& getDefaultSequence() {
-		return mDefaultSequence;
+	string& getDefaultSequenceName() {
+		return mDefaultSequenceName;
 	}
 };

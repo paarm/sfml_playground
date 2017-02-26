@@ -15,6 +15,12 @@ private:
 	bool 	mFlipX=false;
 	bool	mFlipY=false;
 public:
+	LayerObject(const string &rLayerObjectName) {
+		mLayerObjectName=rLayerObjectName;
+	}
+	bool isValid() {
+		return !mLayerObjectName.empty();
+	}
 	void setName(const string &rName) {
 		mLayerObjectName=rName;
 	}

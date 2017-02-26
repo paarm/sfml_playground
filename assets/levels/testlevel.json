@@ -92,10 +92,9 @@
 			"ObjectDescId":			"FakelA",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Fakel.Burn0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Fakel.Burn",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Fakel.Burn",
 					"FrameDelayInMs": 100
 				}
@@ -105,10 +104,9 @@
 			"ObjectDescId": 		"MauerB",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Mauer0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Testschwein.WalkReversed",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.WalkReversed",
 					"FrameDelayInMs": 150
 				}
@@ -118,10 +116,9 @@
 			"ObjectDescId": 		"Strip10A",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Strip10.Walk0",
-			"DefaultSequence": 		"Walk",
+			"DefaultSequence": 		"Strip10.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Walk",
 					"SequenceName": "Strip10.Walk",
 					"FrameDelayInMs": 150
 				}
@@ -131,10 +128,9 @@
 			"ObjectDescId": 		"FixedA",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Walk0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				}
@@ -144,10 +140,9 @@
 			"ObjectDescId": 		"FixedB",
 			"ObjectType": 			"Fixed",
 			"DefaultFrame":			"Testschwein.Walk0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				}
@@ -157,10 +152,9 @@
 			"ObjectDescId": 		"GravityA",
 			"ObjectType": 			"Gravity",
 			"DefaultFrame":			"Testschwein.Walk0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				}
@@ -170,10 +164,9 @@
 			"ObjectDescId":			"SpikeA",
 			"ObjectType": 			"Spike",
 			"DefaultFrame":			"Testschwein.Walk0",
-			"DefaultSequence": 		"Burn",
+			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Burn",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				}
@@ -183,30 +176,25 @@
 			"ObjectDescId": 		"SchweinRot",
 			"ObjectType": 			"Enemy",
 			"DefaultFrame":			"Testschwein.Walk0",
-			"DefaultSequence": 		"Idle",
+			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
 				{
-					"ObjectSequencesName": 	"Idle",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				},
 				{
-					"ObjectSequencesName": 	"WalkLeft",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				},
 				{
-					"ObjectSequencesName": 	"WalkRight",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				},
 				{
-					"ObjectSequencesName": 	"MoveToTop",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				},
 				{
-					"ObjectSequencesName": 	"MoveToBottom",
 					"SequenceName": "Testschwein.Walk",
 					"FrameDelayInMs": 50
 				} 
