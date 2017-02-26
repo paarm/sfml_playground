@@ -8,10 +8,10 @@ private:
 	LevelLoader mLevelLoader;
 	Node2d *background=nullptr;
 protected:
-	void init();
+	void init(const string& rLevelName);
 	//virtual void doDestroy() override;
 	virtual void doUpdate(float) override; 
 public:
-	GameScene();
+	GameScene(const string &rLevelName);
 	using Node::Node;
 };

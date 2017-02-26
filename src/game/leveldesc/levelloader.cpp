@@ -39,7 +39,7 @@ void LevelLoader::addLevelToNode(Node &rParentNode) {
 				if (rLayerObject.isValid()) {
 					ObjectDesc &rObjectDesc=rLevel.getObjectDescByName(rLayerObject.getObjectDescId());
 					if (rObjectDesc.isValid()) {
-						TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rObjectDesc.getDefaultFrame());
+						TextureFrame *rTextureFrame=rLevel.getTextureManager().getTextureFrame(rObjectDesc.getDefaultFrame());
 						Node2d *rNode2d=nullptr;
 						if (rTextureFrame) {
 							string name=rLayerObject.getLayerObjectName();
@@ -54,7 +54,7 @@ void LevelLoader::addLevelToNode(Node &rParentNode) {
 							for (int a=0;a<acount;a++) {
 								ObjectSequence &rObjectSequence=rObjectDesc.getObjectSequenceByIndex(a);
 								if (rObjectSequence.isValid()) {
-									FrameSequence *rFrameSequence=TextureManager::getInstance().getFrameSequence(rObjectSequence.getSequenceName());
+									FrameSequence *rFrameSequence=rLevel.getTextureManager().getFrameSequence(rObjectSequence.getSequenceName());
 									if (rFrameSequence) {
 										rNode2d->addNode(new FramePlayer(rObjectSequence.getSequenceName(), rFrameSequence,(float)rObjectSequence.getFrameDelayInMs()));
 										if (rObjectDesc.getDefaultSequenceName()==rObjectSequence.getSequenceName()) {
@@ -203,7 +203,7 @@ bool LevelLoader::parseTextures(JSONValue *rJSONValueParent) {
 				cout << "Textures.TextureFile not found or empty" << endl;
 				continue;
 			}
-			TextureManager::getInstance().loadTexture(mLevel.getAssetPath()+rTextureFile, &rTextureName);
+			getLevel().getTextureManager().loadTexture(mLevel.getAssetPath()+rTextureFile, rTextureName);
 		}
 		rv=true;
 	} while(false);
@@ -233,7 +233,7 @@ bool LevelLoader::parseAutoFramesAndSequences(JSONValue *rJSONValueParent) {
 			int rFrameCountX=(int)extractNumber(rJSONValue, L"FrameCountX");
 			int rFrameCountY=(int)extractNumber(rJSONValue, L"FrameCountY");
 
-			TextureManager::getInstance().createAutomaticFramesAndSequence(rTextureName, rSequenceName, rFrameCountX, rFrameCountY);
+			getLevel().getTextureManager().createAutomaticFramesAndSequence(rTextureName, rSequenceName, rFrameCountX, rFrameCountY);
 		}
 		rv=true;
 	} while(false);
@@ -265,7 +265,7 @@ bool LevelLoader::parseFramesForTextures(JSONValue *rJSONValueParent) {
 			int rWidth=(int)extractNumber(rJSONValue, L"Width");
 			int rHeight=(int)extractNumber(rJSONValue, L"Height");
 
-			TextureManager::getInstance().addFrameToTexture(rTextureName, rFrameName, rSourceX, rSourceY, rWidth, rHeight);
+			getLevel().getTextureManager().addFrameToTexture(rTextureName, rFrameName, rSourceX, rSourceY, rWidth, rHeight);
 		}
 		rv=true;
 	} while(false);
@@ -300,14 +300,13 @@ bool LevelLoader::parseFramesForSequences(JSONValue *rJSONValueParent) {
 						cout << "FramesForSequences.Frames.Frame.FrameName not found or empty" << endl;
 						continue;
 					}
-					TextureFrame *rTextureFrame=TextureManager::getInstance().getTextureFrame(rFrameName);
+					TextureFrame *rTextureFrame=getLevel().getTextureManager().getTextureFrame(rFrameName);
 					if (!rTextureFrame) {
 						cout << "FramesForSequences.Frames.Frame.FrameName not exists in TextureManager. FrameName: "<< rFrameName << endl;
 						continue;
 					}
-					TextureManager::getInstance().addFrameSequence(rSequenceName)->addTextureFrame(rTextureFrame);
+					getLevel().getTextureManager().addFrameSequence(rSequenceName)->addTextureFrame(rTextureFrame);
 				}
-			
 			}
 		}
 		rv=true;
@@ -409,9 +408,14 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 			if (rGridY<1) {
 				rGridY=1;
 			}
+			if (mLevel.getLayerByName(rLayerName).isValid()) {
+				cout << "Level.Layers.LayerName duplicate LayerName. LayerName: " << rLayerName << endl;
+				continue;
+			}
+
 			Layer &rLayer=mLevel.getOrAddLayer(rLayerName);
 			if (!rLayer.isValid()) {
-				cout << "Lebel.Layers.LayerName could not constructed. LayerName not found or empty" << endl;
+				cout << "Level.Layers.LayerName could not constructed. LayerName not found or empty" << endl;
 				continue;
 			}
 			JSONValue *rLayerObjects=rJSONValue->Child(L"LayerObjects");
@@ -477,6 +481,11 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				extractNumberExist(rJSONValueLayerObject, L"OriginFactorY", &rOriginFactorY);
 				bool rFlipX=extractBool(rJSONValueLayerObject, L"FlipX");
 				bool rFlipY=extractBool(rJSONValueLayerObject, L"FlipY");
+
+				if (rLayer.getLayerObjectByName(rObjectName).isValid()) {
+					cout << "Level.Layer.LayerObjects duplicate ObjectName. ObjectName: " << rObjectName << endl;
+					continue;
+				}
 								
 				LayerObject& rLayerObject=rLayer.getOrAddLayerObject(rObjectName);
 				if (rLayerObject.isValid()) {

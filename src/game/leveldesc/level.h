@@ -5,6 +5,7 @@
 #include "layer.h"
 #include <iostream>
 #include <algorithm>
+#include "../../engine/texturemanager.h"
 
 using namespace std;
 class Level {
@@ -15,6 +16,7 @@ private:
 	vector<Layer> mLayerList;
 	Layer		mEmptyLayer{""};
 	ObjectDesc	mEmptyObjectDesc{""};
+	TextureManager mTextureManager;
 public:
 	void setAssetPath(const string &rAssetPath);
 	string &getAssetPath();
@@ -28,7 +30,9 @@ public:
 	Layer& getLayerByName(const string &rLayerName);
 	int getLayerCount();
 	Layer& getLayerFromIndex(int rIndex);
-	
+	TextureManager& getTextureManager() {
+		return mTextureManager;
+	}
 
 	void clearLevel();
 	void setLevelName(const string &rLevelName);

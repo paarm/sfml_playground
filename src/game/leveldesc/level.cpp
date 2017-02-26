@@ -4,6 +4,7 @@ void Level::clearLevel() {
 	mLevelName="";
 	mObjectDescMap.clear();
 	mLayerList.clear();
+	mTextureManager.reset();
 }
 
 void Level::setLevelName(const string &rLevelName) {

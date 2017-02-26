@@ -204,7 +204,7 @@
 	"Level": {
 		"Layers": [
 			{
-				"LayerName": "Background",
+				"LayerName": "BackgroundLayer",
 				"ZOrder": 0,
 				"LayerObjects": [
 					{
@@ -248,7 +248,7 @@
 						"GridPosY": 15
 					},
 					{
-						"ObjectName": "FakelAXY",
+						"ObjectName": "FakelAXY1",
 						"ObjectDescId": "FakelA",
 						"GridPosX": 13,
 						"GridPosY": 5,
@@ -257,13 +257,13 @@
 						"OriginFactorY": 0.5
 					},
 					{
-						"ObjectName": "FakelAXY",
+						"ObjectName": "FakelAXY2",
 						"ObjectDescId": "FakelA",
 						"PosX": 300,
 						"PosY": 100
 					},
 					{
-						"ObjectName": "FakelAXY",
+						"ObjectName": "FakelAXY3",
 						"ObjectDescId": "FakelA",
 						"PosX": 320,
 						"PosY": 120

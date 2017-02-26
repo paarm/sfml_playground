@@ -2,18 +2,15 @@
 
 Node::Node(const string &name) {
 	mName=name;
-	cout << "C " << mName << endl;
-}
-
-Node::Node(const char *name) : Node(string(name)) {
+	cout << "Create Node: " << mName << endl;
 }
 
 Node::Node() : mName("") {
-	cout << "C " << mName << endl;
+	cout << "Create Node: " << mName << endl;
 }
 
 Node::~Node() {
-	cout << "D " << mName << endl;
+	cout << "Node destroyed: " << mName << endl;
 	deleteChilds();
 }
 

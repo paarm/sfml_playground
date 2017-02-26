@@ -28,7 +28,8 @@ private:
 	//SDL_Renderer 	*mSDL_Renderer=nullptr;
 	RenderWindowHandle	mWindowHandle;
 	bool 			mIsInitialized=false;
-	NodeRoot		mRootScene;
+	bool			mIsRunning=false;
+	NodeRoot		mRootScene {"Root scene"};
 	Node			*mStageScene=nullptr;
 	Node			*mCurrentScene=nullptr;
 	Clock 			clock;
@@ -37,8 +38,8 @@ private:
 	Director(const Director&) = delete;
 	Director& operator=(const Director&)=delete;
 public:
-	static Director* getInstance() {
-		static Director *instance=new Director(); 
+	static Director& getInstance() {
+		static Director instance; 
 		return instance;
 	}
 	~Director();

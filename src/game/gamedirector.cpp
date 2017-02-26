@@ -28,9 +28,13 @@ int GameDirector::getBlockCountY() {
 	return BLOCK_COUNT_Y;
 }
 void GameDirector::run() {
-	Director::getInstance()->initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);
+	Director::getInstance().initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);
 	//TextureManager::getInstance().loadTexture("assets/cursor.png", "cursor");
 	//Director::getInstance()->setMousePointer(TextureManager::getInstance().getTexture("cursor"), MousePointerAlignment::Middle);
-	GameScene *rGameScene=new GameScene();
-	Director::getInstance()->runWithNode(rGameScene);
+	GameScene *rGameScene=new GameScene("assets/levels/testlevel.json");
+	Director::getInstance().runWithNode(rGameScene);
+}
+
+void GameDirector::runWithLevel(const string &rLevelName) {
+
 }

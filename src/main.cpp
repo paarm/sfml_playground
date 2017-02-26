@@ -157,18 +157,10 @@ int main(int, char**) {
 	//rTestVector.emplace_back(Test("Hallo vvvv"));
 
 	cout <<"name ist " << string(rTest.getName()) <<endl;
-#endif
 	Test x("Hallo");
 	Test y(static_cast<Test&&>(x));
 	cout << "x="<<x.getName() << " und y=" <<y.getName() <<endl;
-
+#endif
 	GameDirector::getInstance().run();
-#if 0
-	Director::getInstance()->initialize(VIRTUAL_SCREEN_SIZE_X, VIRTUAL_SCREEN_SIZE_Y);
-	//TextureManager::getInstance().loadTexture("assets/cursor.png", "cursor");
-	//Director::getInstance()->setMousePointer(TextureManager::getInstance().getTexture("cursor"), MousePointerAlignment::Middle);
-	MyScene *s=new MyScene();
-	Director::getInstance()->runWithNode(s);
-#endif	
 	return 0;
 }

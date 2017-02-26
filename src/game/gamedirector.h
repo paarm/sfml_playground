@@ -1,5 +1,7 @@
 #pragma once
+#include <string>
 
+using namespace std;
 class GameDirector {
 private:
 	GameDirector() = default;
@@ -10,6 +12,8 @@ public:
 		static GameDirector rGameDirector;
 		return rGameDirector;
 	}
+	void runWithLevel(const string &rLevelName);
+	
 	int getVirtualScreenSizeX();
 	int getVirtualScreenSizeY();
 	int getBlockSizeX();

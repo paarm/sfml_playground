@@ -1,30 +1,30 @@
 #include "gamescene.h"
+#include "../engine/director.h"
 
+GameScene::GameScene(const string& rLevelName) : Node(rLevelName) {
+	init(rLevelName);
+}
 
-GameScene::GameScene() : Node("Game Scene") {
-	init();
-} 
-
-void GameScene::init() {
-	mLevelLoader.loadLevel("assets/levels/testlevel.json");
+void GameScene::init(const string &rLevelName) {
+	mLevelLoader.loadLevel(rLevelName);
 	//TextureManager::getInstance().loadTexture("assets/testschwein.png", "testschwein");
 	//TextureManager::getInstance().createAutomaticFramesAndSequence("testschwein", "testschwein.Walk", 11, 1);
 
 	//s_sub->addNode(new FramePlayer("Test.Walk2", textureManager.getFrameSequence("Test.Walk2"),1000, PlayerType::Forward));
 
 	mLevelLoader.addLevelToNode(*this);
+#if 0
 
-
-	Node2d *rNodeSchweinchen=(Node2d*)addNode(new Node2d(string("Sprite 2"), TextureManager::getInstance().getTextureFrame(string("Testschwein.Walk0")), 150, 0));
+	Node2d *rNodeSchweinchen=(Node2d*)addNode(new Node2d("Sprite 2", TextureManager::getInstance().getTextureFrame("Testschwein.Walk0"), 150, 0));
 	//s_sub->setScale(2.0,2.0);
 	// add two animation player to the second sprite and activate animation player 1 for now
 	rNodeSchweinchen->addNode(new FramePlayer("Testschwein.Walk", TextureManager::getInstance().getFrameSequence("Testschwein.Walk"),50));
 	rNodeSchweinchen->activateFramePlayer("Testschwein.Walk");
 	rNodeSchweinchen->setFlipX(true);
 	rNodeSchweinchen->setFlipY(true);
-
+#endif
 	FontContext *rFontContext=FontManager::getInstance().addFont("assets/sansation.ttf","sansation");
-	NodeText *s_text=(NodeText*)addNode(new NodeText(string ("FramesPerSecond"), rFontContext, 10, 10));
+	NodeText *s_text=(NodeText*)addNode(new NodeText("FramesPerSecond", rFontContext, 10, 10));
 	s_text->setText("0");
 
 #if 0
@@ -78,4 +78,6 @@ void GameScene::doUpdate(float rDelta) {
 		s_text->setText(std::to_string((int)((1000.0/rDelta)))+" FPS");
 		//s_text->setText(std::to_string(rDelta)+" FPS");
 	}
+	//GameScene *rGameScene=new GameScene("assets/levels/testlevel.json");
+	//Director::getInstance()->switchScene(rGameScene);
 }

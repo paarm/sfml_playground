@@ -29,7 +29,7 @@ public:
 	}
 
 	LayerObject& getOrAddLayerObject(string &rLayerObjectName) {
-		LayerObject &rLayerObjectExist=getLayerObjectByLayerObjectName(rLayerObjectName);
+		LayerObject &rLayerObjectExist=getLayerObjectByName(rLayerObjectName);
 		if (!rLayerObjectName.empty() && !rLayerObjectExist.isValid()) {
 			mLayerObjectList.emplace_back(rLayerObjectName);
 			return mLayerObjectList.back();
@@ -37,7 +37,7 @@ public:
 		return rLayerObjectExist;
 	}
 
-	LayerObject& getLayerObjectByLayerObjectName(string &rLayerObjectName) {
+	LayerObject& getLayerObjectByName(string &rLayerObjectName) {
 		auto r=find_if(mLayerObjectList.begin(), mLayerObjectList.end(), [&rLayerObjectName] (LayerObject &r) {
 			return r.getLayerObjectName()==rLayerObjectName;
 		});

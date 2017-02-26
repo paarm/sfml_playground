@@ -5,21 +5,19 @@ TextureManager::TextureManager() {
 }
 
 TextureManager::~TextureManager() {
-	for(const auto &it : mTextureMap) {
-		std::cout << "Texture destroyed: " << it.first << std::endl;
-
-		delete it.second;
-		//SDL_DestroyTexture(it.second);
-	}
-	mTextureMap.clear();
-	mAliasMap.clear();
-//	std::map<string, SDL_Texture*>::iterator it=mTextureMap.begin();
-//	while(it!=mTextureMap.end()) {
-//		SDL_DestroyTexture(it.second());
-//		it++;
-//	}
+	reset();
 }
 
+void TextureManager::reset() {
+	mAliasMap.clear();
+	mFrameMap.clear();
+	mFrameSequenceMap.clear();
+	for(const auto &it : mTextureMap) {
+		std::cout << "Texture destroyed: " << it.first << std::endl;
+		delete it.second;
+	}
+	mTextureMap.clear();
+}
 #if 0
 bool TextureManager::proofSDLRenderer() {
 	if (!mSDL_Renderer) {
@@ -47,70 +45,34 @@ void TextureManager::queryTextureSize(sf::Texture *rSDL_Texture, int *dx, int *d
 }
 #endif
 
-void TextureManager::addDefaultFrame(const string &pathName, const string *&alias, sf::Texture* rSDL_Texture) {
-	if (alias) {
-		addFrameToTexture(pathName, *alias, 0, 0, (int)rSDL_Texture->getSize().x, (int)rSDL_Texture->getSize().y);
-	} else {
-		addFrameToTexture(pathName, pathName, 0, 0, (int)rSDL_Texture->getSize().x, (int)rSDL_Texture->getSize().y);
-	}
-}
 
-sf::Texture *TextureManager::loadTexture(const string &pathName, const char*alias) {
-	if (alias) {
-		string sAlias(alias);
-		return loadTexture(pathName, &sAlias);
-	} else {
-		return loadTexture(pathName, (const string*)nullptr);
-	}
-}
-
-sf::Texture *TextureManager::loadTexture(const string &pathName, const string *alias) {
+sf::Texture *TextureManager::loadTexture(const string &pathName, const string& alias) {
 	sf::Texture *rv=nullptr;
 	rv=TextureManager::getTexture(pathName);
 	if (!rv) {
 		rv=new sf::Texture();
 		if (rv->loadFromFile(pathName.c_str())) {
 			std::cout << "Load Texture: " << pathName;
-			if (alias) {
-				std::cout << " as alias: " <<*alias << std::endl;
+			if (!alias.empty()) {
+				std::cout << " as alias: " <<alias << std::endl;
 			} else {
 				std::cout << std::endl;
 			}
 			mTextureMap[pathName]=rv;
-			if (alias) {
-				mAliasMap[*alias]=pathName;
+			if (!alias.empty()) {
+				mAliasMap[alias]=pathName;
 			}
-			addDefaultFrame(pathName, alias, rv);					
+			// add the default frame with the full texture for the texture path or if present for the alias name 
+			addFrameToTexture(pathName, !alias.empty()?alias: pathName, 0, 0, (int)rv->getSize().x, (int)rv->getSize().y);
 		}
-#if 0
-			SDL_Surface *bmp = IMG_Load(pathName.c_str());//SDL_LoadBMP("test.png"/*imagePath.c_str()""*/);
-			if (bmp == nullptr) {
-				std::cout << "IMG_Load Error: " << SDL_GetError() << std::endl;
-			} else {
-				SDL_SetSurfaceBlendMode(bmp,SDL_BLENDMODE_BLEND);
-				std::cout << "Load Texture: " << pathName;
-				if (alias) {
-					std::cout << " as alias: " <<*alias << std::endl;
-				} else {
-					std::cout << std::endl;
-				}
-				// create texture from surface (bitmap)
-				rv = SDL_CreateTextureFromSurface(mSDL_Renderer, bmp);
-				if (rv) {
-					mTextureMap[pathName]=rv;
-					if (alias) {
-						mAliasMap[*alias]=pathName;
-					}
-					addDefaultFrame(pathName, alias, rv);					
-				}
-				SDL_FreeSurface(bmp);
-			}
-#endif			
-	} else if (alias) {
+	} else if (!alias.empty()) {
 		// texture already exists. Add only the alias if not exist anymore
-		std::cout << "Reuse already loaded Texture: " << pathName << " as alias: " << *alias << std::endl;
-		mAliasMap[*alias]=pathName;
-		addDefaultFrame(pathName, alias, rv);
+		std::cout << "Reuse already loaded Texture: " << pathName << " as alias: " << alias << std::endl;
+		if (mAliasMap.find(alias)!=mAliasMap.end()) {
+			mAliasMap[alias]=pathName;
+			// add the default frame with the full texture for the texture path or if present for the alias name 
+			addFrameToTexture(pathName, alias, 0, 0, (int)rv->getSize().x, (int)rv->getSize().y);
+		}
 	}
 	return rv;
 }
@@ -141,4 +103,122 @@ sf::Texture* TextureManager::getTexture(const string &name) {
 		}
 	}
 	return rv;
+}
+
+TextureFrame *TextureManager::getTextureFrame(const string &frameName) {
+	const auto &it=mFrameMap.find(frameName);
+	if (it==mFrameMap.end()) {
+		string* pathName=getPathNameFromAlias(&frameName);
+		if (pathName) {
+			const auto &it2=mFrameMap.find(frameName);
+			if (it2!=mFrameMap.end()) {
+				return &it2->second;
+			}	
+		}
+	} else {
+		return &it->second;
+	}
+	return nullptr;
+}
+
+FrameSequence *TextureManager::createAutomaticFramesAndSequence(const string &textureName, const string &rSequenceName, int xFrameCount, int yFrameCount) {
+	if (isFrameSequenceExist(rSequenceName)) {
+		return getFrameSequence(rSequenceName);
+	}
+	int frameCount=addFramesAutomaticallyToTexture(textureName, rSequenceName, xFrameCount, yFrameCount);
+	return addAutomaticFramesToFrameSequence(rSequenceName, frameCount);
+}
+
+int TextureManager::addFramesAutomaticallyToTexture(const string &textureName, const string &rSequenceName, int xFrameCount, int yFrameCount) {
+	sf::Texture* rSDL_Texture=getTexture(textureName);
+	int frameCount=0;
+	if (rSDL_Texture && xFrameCount>0 && yFrameCount>0) {
+		int textX=0;
+		int textY=0;
+		textX=(int)rSDL_Texture->getSize().x;
+		textY=(int)rSDL_Texture->getSize().y;
+
+		int xFrameSize=textX/xFrameCount;
+		int yFrameSize=textY/yFrameCount;
+
+		for (int y=0;y<yFrameCount;y++) {
+			for (int x=0;x<xFrameCount;x++) {
+				string frameName=rSequenceName;
+				frameName+=to_string(frameCount);
+				addFrameToTexture(textureName, frameName, x*xFrameSize, y*yFrameSize, xFrameSize, yFrameSize);
+				frameCount++;
+			}
+		}
+	}
+	return frameCount;		
+}
+FrameSequence *TextureManager::addAutomaticFramesToFrameSequence(const string& rSequenceName, int count) {
+	FrameSequence *rv=addFrameSequence(rSequenceName);
+	if (rv) {
+		for (int i=0;i<count;i++) {
+			string frameName=rSequenceName;
+			frameName+=to_string(i);
+			TextureFrame *textureFrame=getTextureFrame(frameName);
+			if (textureFrame) {
+				rv->addTextureFrame(textureFrame);			
+			} else {
+				break;
+			}
+		}
+	}
+	return rv;
+}
+
+
+TextureFrame *TextureManager::addFrameToTexture(const string &textureName, const string &frameName, int x, int y, int dx, int dy) {
+	TextureFrame*rv=nullptr;
+	sf::Texture* rSDL_Texture=getTexture(textureName);
+	if (rSDL_Texture) {
+		rv=getTextureFrame(frameName);
+		if (!rv) {
+			int textX=0;
+			int textY=0;
+			textX=(int)rSDL_Texture->getSize().x;
+			textY=(int)rSDL_Texture->getSize().y;
+			
+			Frame rFrame;
+			rFrame.x=x;
+			rFrame.y=y;
+			rFrame.dx=dx;
+			rFrame.dy=dy;
+			keepSourceInTextureRange(rFrame, textX, textY);
+			TextureFrame rTextureFrame;
+			rTextureFrame.mFrameName=frameName;
+			rTextureFrame.mFrame=rFrame;
+			rTextureFrame.mSDL_Texture=rSDL_Texture;
+			mFrameMap[frameName]=rTextureFrame;
+			rv=&mFrameMap[frameName];
+		}
+	}
+	return rv;
+}
+
+FrameSequence *TextureManager::addFrameSequence(const string& rSequenceName) {
+	const auto &it=mFrameSequenceMap.find(rSequenceName);
+	if (it!=mFrameSequenceMap.end()) {
+		return &it->second;
+	}
+	FrameSequence rFrameSequence;
+	mFrameSequenceMap[rSequenceName]=rFrameSequence;
+	return &mFrameSequenceMap[rSequenceName];
+}
+bool TextureManager::isFrameSequenceExist(const string &rSequenceName) {
+	bool rv=false;
+	const auto &it=mFrameSequenceMap.find(rSequenceName);
+	if (it!=mFrameSequenceMap.end()) {
+		rv=true;
+	}
+	return rv;
+}
+FrameSequence *TextureManager::getFrameSequence(const string& rSequenceName) {
+	const auto &it=mFrameSequenceMap.find(rSequenceName);
+	if (it!=mFrameSequenceMap.end()) {
+		return &it->second;
+	}
+	return nullptr;
 }

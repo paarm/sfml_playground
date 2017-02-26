@@ -1,6 +1,7 @@
 #include "director.h"
 
 Director::Director() {
+	std::cout << "Director created" << std::endl;
 	mRootScene.scheduleUpdate(true);
 }
 
@@ -10,6 +11,7 @@ Director::~Director() {
 		mWindowHandle.mSFL_Window=nullptr;
 	}
 	mRootScene.deleteChilds();
+	std::cout << "Director destroyed" << std::endl;
 }
 
 void Director::initialize(int rVirtualScreenResolutionX, int rVirtualScreenResolutionY) {
@@ -79,8 +81,9 @@ void Director::setMousePointer(SDL_Texture *rSDL_Texture, MousePointerAlignment 
 #endif	
 
 void Director::runWithNode(Node *n) {
-	if (mIsInitialized) {
+	if (mIsInitialized && !mIsRunning) {
 		bool quit=false;
+		mIsRunning=true;
 		switchScene(n);
 		while (!quit) {
 			clock.tick();
@@ -145,6 +148,8 @@ void Director::runWithNode(Node *n) {
 				quit=(!mWindowHandle.mSFL_Window->isOpen());
 			}
 		}
+		mRootScene.deleteChilds();
+		mIsRunning=false;
 	}
 }
 

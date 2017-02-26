@@ -42,7 +42,6 @@ protected:
 	virtual void doDestroy();
 public:
 	Node(const string &name);
-	Node(const char *name);
 	Node();
 	virtual ~Node();
 	Node* addNode(Node *n);
@@ -73,6 +72,7 @@ class FramePlayer;
 class NodeRoot : public Node {
 private:
 public:
+	NodeRoot(const string& rName) : Node(rName) {}
 	virtual NodeType getNodeType() override { return NodeType::Root;}
 	void	executeDraw(sf::RenderTarget& target, const sf::Transform& parentTransform) {
 		drawInternal(target, parentTransform);
