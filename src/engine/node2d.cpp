@@ -76,7 +76,7 @@ void Node2d::updateInternal(float deltaTime) {
 
 void Node2d::activateFramePlayer(const string &name, float rDelayInMs, PlayerType playerType) {
 	Node *n=searchNode(name);
-	if (n && n->getNodeType()==NodeType::Player) {
+	if (n && n->getNodeType()==NodeType::FramePlayer) {
 		mFramePlayer=(FramePlayer*)n;
 		if (rDelayInMs!=-1.0) {
 			mFramePlayer->setDelayInMs(rDelayInMs);
@@ -164,4 +164,12 @@ void Node2d::setFlipX(bool rFlipX) {
 
 void Node2d::setFlipY(bool rFlipY) {
 	mFlipY=rFlipY;
+}
+
+sf::FloatRect Node2d::getLocalBounds() {
+	return mSprite.getLocalBounds();
+}
+
+sf::FloatRect Node2d::getGlobalBounds() {
+	return mSprite.getGlobalBounds();
 }

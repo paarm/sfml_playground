@@ -10,11 +10,11 @@
 
 using namespace std;
 
-enum class NodeType{
+enum class NodeType {
 	Node=0,
 	Sprite,
 	Text,
-	Player,
+	FramePlayer,
 	Root
 };
 
@@ -50,6 +50,7 @@ public:
 	void deleteNode(Node *n);
 	void deleteChilds();
 	Node* searchNode(const string&name, bool searchInSub=false);
+	const vector<Node*>& getChildNodeList();
 	void debugPrint();
 	void scheduleUpdate(bool rScheduleUpdate) {
 		mScheduledUpdate=rScheduleUpdate;
@@ -145,6 +146,8 @@ public:
 	void deactivateFramePlayer();
 	void setFlipX(bool rFlipX);
 	void setFlipY(bool rFlipY);
+	sf::FloatRect getLocalBounds();
+	sf::FloatRect getGlobalBounds();
 };
 
 
@@ -233,6 +236,6 @@ public:
 	TextureFrame* getCurrentTextureFrame() {
 		return mFrameSequence->getTextureFrame(mCurrentFrame);
 	}
-	virtual NodeType getNodeType() override { return NodeType::Player;}
+	virtual NodeType getNodeType() override { return NodeType::FramePlayer;}
 	
 };

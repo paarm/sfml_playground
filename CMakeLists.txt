@@ -33,6 +33,7 @@ src/game/leveldesc/objectdesc.h src/game/leveldesc/objectdesc.cpp
 src/game/leveldesc/layer.h
 src/game/gamedirector.h src/game/gamedirector.cpp
 src/game/gamescene.h src/game/gamescene.cpp
+src/game/worldstate.h
 src/main.cpp 
 )
 

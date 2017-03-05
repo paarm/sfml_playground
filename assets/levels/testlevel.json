@@ -173,8 +173,8 @@
 			]			
 		},
 		{
-			"ObjectDescId": 		"SchweinRot",
-			"ObjectType": 			"Enemy",
+			"ObjectDescId": 		"Player",
+			"ObjectType": 			"Player",
 			"DefaultFrame":			"Testschwein.Walk0",
 			"DefaultSequence": 		"Testschwein.Walk",
 			"ObjectSequences": [
@@ -222,11 +222,95 @@
 				"GridY": 32,
 				"LayerObjects": [
 					{
-						"ObjectName": "TestBlock",
-						"ObjectDescId": "FixedA",
-						"GridPosX": 1,
-						"GridPosY": 1
+						"ObjectName": "0/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 0,
+						"GridPosY": 0
 					},
+					{
+						"ObjectName": "1/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 1,
+						"GridPosY": 0
+					},
+
+
+					{
+						"ObjectName": "0/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 0,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "1/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 1,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "2/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 2,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "3/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 3,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "4/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 4,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "5/23",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 5,
+						"GridPosY": 15
+					},
+
+					{
+						"ObjectName": "6/18",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 6,
+						"GridPosY": 18
+					},
+					{
+						"ObjectName": "7/18",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 7,
+						"GridPosY": 18
+					},
+					{
+						"ObjectName": "8/18",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 8,
+						"GridPosY": 18
+					},
+					{
+						"ObjectName": "9/18",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 9,
+						"GridPosY": 18
+					},
+					{
+						"ObjectName": "10/19",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 10,
+						"GridPosY": 19
+					},
+					{
+						"ObjectName": "11/19",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 11,
+						"GridPosY": 19
+					},
+
+
+
 					{
 						"ObjectName": "TestBlockxa",
 						"ObjectDescId": "FixedA",
@@ -276,7 +360,21 @@
 					}
 					
 				]				
-			}
+			},
+			{
+				"LayerName": "Enemies",
+				"ZOrder": 2,
+				"GridX": 32,
+				"GridY": 32,
+				"LayerObjects": [
+					{
+						"ObjectName": "Player",
+						"ObjectDescId": "Player",
+						"GridPosX": 2,
+						"GridPosY": 5
+					}
+				]
+			}			
 		]
 	}
 }

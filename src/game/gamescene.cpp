@@ -7,12 +7,27 @@ GameScene::GameScene(const string& rLevelName) : Node(rLevelName) {
 
 void GameScene::init(const string &rLevelName) {
 	mLevelLoader.loadLevel(rLevelName);
+	mLevelLoader.addLevelToNode(*this);
+	Node2d* rNode2dPlayer=(Node2d*)this->searchNode("Player", true);
+	if (rNode2dPlayer) {
+		mWorldState.setPlayerObject(rNode2dPlayer);
+	}
+	Node* rNodePlayfield=(Node*)this->searchNode("Playfield", true);
+	if (rNodePlayfield) {
+		const vector<Node*>& rNodeList=rNodePlayfield->getChildNodeList();
+		for (Node *rNode : rNodeList) {
+			if (rNode->getNodeType()==NodeType::Sprite) {
+				Node2d* rNode2dBlock=(Node2d*)rNode;
+				mWorldState.addFixedObject(rNode2dBlock);
+			}
+		}
+	}
+
 	//TextureManager::getInstance().loadTexture("assets/testschwein.png", "testschwein");
 	//TextureManager::getInstance().createAutomaticFramesAndSequence("testschwein", "testschwein.Walk", 11, 1);
 
 	//s_sub->addNode(new FramePlayer("Test.Walk2", textureManager.getFrameSequence("Test.Walk2"),1000, PlayerType::Forward));
 
-	mLevelLoader.addLevelToNode(*this);
 #if 0
 
 	Node2d *rNodeSchweinchen=(Node2d*)addNode(new Node2d("Sprite 2", TextureManager::getInstance().getTextureFrame("Testschwein.Walk0"), 150, 0));
@@ -62,6 +77,28 @@ void GameScene::init(const string &rLevelName) {
 }
 
 void GameScene::doUpdate(float rDelta) {
+	bool keyLeft=false;
+	bool keyRight=false;
+	bool keyUp=false;
+	bool keyDown=false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		keyLeft=true;
+		cout << "Key Left" << endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		keyRight=true;
+		cout << "Key Right" << endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		keyUp=true;
+		cout << "Key Up" << endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		keyDown=true;
+		cout << "Key Down" << endl;
+	}
+	mWorldState.update(rDelta, keyLeft, keyRight, keyUp, keyDown, false);
+
 	Node2d* rBackgroundLayer=(Node2d*)searchNode("DuMusstDichDrehen", true);
 	if (rBackgroundLayer) {
 		rBackgroundLayer->setOriginMiddle();

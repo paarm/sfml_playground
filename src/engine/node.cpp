@@ -86,6 +86,12 @@ Node* Node::searchNode(const string &name, bool searchInSub) {
 	}
 	return rv;
 }
+
+const vector<Node*>& Node::getChildNodeList() {
+	return *mChildNodes;
+}
+
+
 void Node::debugPrint() {
 	cout << mName << endl;
 	if (mChildNodes) {

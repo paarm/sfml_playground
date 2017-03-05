@@ -1,11 +1,12 @@
 #pragma once
 #include "../engine/node.h"
 #include "leveldesc/levelloader.h"
-
+#include "worldstate.h"
 
 class GameScene : public Node {
 private:
 	LevelLoader mLevelLoader;
+	WorldState  mWorldState;
 	Node2d *background=nullptr;
 protected:
 	void init(const string& rLevelName);

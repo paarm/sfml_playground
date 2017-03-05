@@ -20,6 +20,9 @@ public:
 	int getBlockSizeY();
 	int getBlockCountX();
 	int getBlockCountY();
-
+	float getEnemyLeftRightSpeedPerSecond();
+	float getEnemyTopBottomSpeedPerSecond();
+	float getPlayerSpeedLeftRightPerSecond();
+	float getPlayerSpeedTopBottomPerSecond();
 	void run();
 };
