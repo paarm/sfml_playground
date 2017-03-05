@@ -19,6 +19,10 @@
 		{
 			"TextureName": 	"Strip10",
 			"TextureFile": 	"strip10.png"
+		},
+		{
+			"TextureName": 	"Brick",
+			"TextureFile": 	"brick.png"
 		}
 	],
 	"AutoFramesAndSequences": [
@@ -86,7 +90,7 @@
 		{
 			"ObjectDescId":			"MauerA",
 			"ObjectType": 			"Fixed",
-			"DefaultFrame":			"Testschwein.Mauer0"
+			"DefaultFrame":			"Brick"
 		},
 		{
 			"ObjectDescId":			"FakelA",
@@ -232,6 +236,72 @@
 						"ObjectDescId": "MauerA",
 						"GridPosX": 1,
 						"GridPosY": 0
+					},
+					{
+						"ObjectName": "2/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 2,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "3/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 3,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "4/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 4,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "5/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 5,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "6/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 6,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "7/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 7,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "8/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 8,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "9/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 9,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "10/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 10,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "11/0",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 11,
+						"GridPosY": 0
+					},
+					{
+						"ObjectName": "12/1",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 12,
+						"GridPosY": 1
 					},
 
 

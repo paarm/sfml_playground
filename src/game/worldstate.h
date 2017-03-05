@@ -88,9 +88,13 @@ public:
 			mNode2d->setPositionRelative(-mLastDeltaX, 0.0);
 		}	
 	}
-	void commitLeftRightMove() {
+	void commitLeftRightMove(float correctDeltaX) {
 		if (mNode2d) {
-			mNode2d->setPositionRelative(mLastDeltaX, 0.0);
+			if (mLastDeltaX>0.0) {
+				mNode2d->setPositionRelative(mLastDeltaX-correctDeltaX, 0.0);
+			} else {
+				mNode2d->setPositionRelative(mLastDeltaX+correctDeltaX, 0.0);
+			}
 		}	
 	}
 	void moveTopBottom(float rDeltaTime, float rSpeedPerSecond) {
@@ -113,9 +117,13 @@ public:
 			mNode2d->setPositionRelative(0.0, -mLastDeltaY);
 		}	
 	}
-	void commitTopBottomMove() {
+	void commitTopBottomMove(float correctDeltaY) {
 		if (mNode2d) {
-			mNode2d->setPositionRelative(0.0, mLastDeltaY);
+			if (mLastDeltaY>0.0) {
+				mNode2d->setPositionRelative(0.0, mLastDeltaY-correctDeltaY);
+			} else if (mLastDeltaY<0.0) {
+				mNode2d->setPositionRelative(0.0, mLastDeltaY+correctDeltaY);
+			}
 		}	
 	}
 
@@ -173,7 +181,8 @@ private:
 	vector<FixedObject> mFixedObjectList;
 	vector<EnemyObject> mEnemyObjectList;
 	PlayerObject 		mPlayerObject;
-	sf::FloatRect		mIntersection;
+	sf::FloatRect		mIntersectionX;
+	sf::FloatRect		mIntersectionY;
 public:
 	void setPlayerObject(Node2d *rNode2d) {
 		mPlayerObject.setNode2d(rNode2d);
@@ -182,7 +191,6 @@ public:
 		mFixedObjectList.emplace_back(rNode2d);
 	}
 	void update(float deltaTime, bool keyLeft, bool keyRight, bool keyUp, bool keyDown, bool keyPick) {
-		bool rMovedLeftRight=false;
 		if (keyLeft || keyRight) {
 			if (keyLeft) {
 				mPlayerObject.setDirection(Direction::Left);
@@ -210,31 +218,36 @@ public:
 			sf::FloatRect newPos=oldPos;
 			newPos.top=(newPos.top+mPlayerObject.getLastDeltaY());
 			for(FixedObject& rFixedObject: mFixedObjectList) {
-				if (rFixedObject.getLocation().intersects(newPos,mIntersection)) {
+				if (rFixedObject.getLocation().intersects(newPos,mIntersectionY)) {
 					rIntersectsY=true;
 					break;
 				}
 			}
 		}
+
 		bool rIntersectsX=false;
 		if (mPlayerObject.getLastDeltaX()!=0.0) {
 			sf::FloatRect newPos=oldPos;
 			newPos.left=(newPos.left+mPlayerObject.getLastDeltaX());
 			for(FixedObject& rFixedObject: mFixedObjectList) {
-				if (rFixedObject.getLocation().intersects(newPos,mIntersection)) {
+				if (rFixedObject.getLocation().intersects(newPos,mIntersectionX)) {
 					rIntersectsX=true;
 					break;
 				}
 			}
 		}
+
 		if (!rIntersectsY) {
-			mPlayerObject.commitTopBottomMove();
+			mPlayerObject.commitTopBottomMove(0.0);
 			mPlayerObject.setGroundTouched(false);
 		} else {
+			mPlayerObject.commitTopBottomMove(mIntersectionY.height);
 			mPlayerObject.setGroundTouched(true);
 		}
 		if (!rIntersectsX) {
-			mPlayerObject.commitLeftRightMove();
+			mPlayerObject.commitLeftRightMove(0.0);
+		} else {
+			mPlayerObject.commitLeftRightMove(mIntersectionX.width);
 		}
 	}
 };
