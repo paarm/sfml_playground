@@ -17,6 +17,7 @@ private:
 	Layer		mEmptyLayer{""};
 	ObjectDesc	mEmptyObjectDesc{""};
 	TextureManager mTextureManager;
+	int			mLevelObjectNameNbPool=0;
 public:
 	void setAssetPath(const string &rAssetPath);
 	string &getAssetPath();
@@ -33,7 +34,7 @@ public:
 	TextureManager& getTextureManager() {
 		return mTextureManager;
 	}
-
+	int	getNextLevelObjectNameNb();
 	void clearLevel();
 	void setLevelName(const string &rLevelName);
 	string& getLevelName();

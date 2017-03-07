@@ -226,76 +226,11 @@
 				"GridY": 32,
 				"LayerObjects": [
 					{
-						"ObjectName": "0/0",
+						"ObjectName": "",
 						"ObjectDescId": "MauerA",
 						"GridPosX": 0,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "1/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 1,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "2/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 2,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "3/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 3,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "4/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 4,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "5/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 5,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "6/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 6,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "7/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 7,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "8/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 8,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "9/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 9,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "10/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 10,
-						"GridPosY": 0
-					},
-					{
-						"ObjectName": "11/0",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 11,
-						"GridPosY": 0
+						"GridPosY": 0,
+						"RepeatX": 11
 					},
 					{
 						"ObjectName": "12/1",
@@ -303,92 +238,49 @@
 						"GridPosX": 12,
 						"GridPosY": 1
 					},
+					{
+						"ObjectName": "",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 14,
+						"GridPosY": 0,
+						"RepeatX": 20
+					},
+
+
+
+
 
 
 					{
 						"ObjectName": "0/23",
 						"ObjectDescId": "MauerA",
 						"GridPosX": 0,
-						"GridPosY": 15
-					},
-					{
-						"ObjectName": "1/23",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 1,
-						"GridPosY": 15
-					},
-					{
-						"ObjectName": "2/23",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 2,
-						"GridPosY": 15
-					},
-					{
-						"ObjectName": "3/23",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 3,
-						"GridPosY": 15
-					},
-					{
-						"ObjectName": "4/23",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 4,
-						"GridPosY": 15
-					},
-					{
-						"ObjectName": "5/23",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 5,
-						"GridPosY": 15
+						"GridPosY": 15,
+						"RepeatX": 6
 					},
 
 					{
-						"ObjectName": "6/18",
+						"ObjectName": "",
 						"ObjectDescId": "MauerA",
 						"GridPosX": 6,
-						"GridPosY": 18
-					},
-					{
-						"ObjectName": "7/18",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 7,
-						"GridPosY": 18
-					},
-					{
-						"ObjectName": "8/18",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 8,
-						"GridPosY": 18
-					},
-					{
-						"ObjectName": "9/18",
-						"ObjectDescId": "MauerA",
-						"GridPosX": 9,
-						"GridPosY": 18
+						"GridPosY": 18,
+						"RepeatX": 4
 					},
 					{
 						"ObjectName": "10/19",
 						"ObjectDescId": "MauerA",
 						"GridPosX": 10,
-						"GridPosY": 19
+						"GridPosY": 19,
+						"RepeatX": 2
 					},
 					{
-						"ObjectName": "11/19",
+						"ObjectName": "",
 						"ObjectDescId": "MauerA",
-						"GridPosX": 11,
-						"GridPosY": 19
+						"GridPosX": 12,
+						"GridPosY": 19,
+						"RepeatX": 32
 					},
 
-
-
-					{
-						"ObjectName": "TestBlockxa",
-						"ObjectDescId": "FixedA",
-						"GridPosX": 18,
-						"GridPosY": 1,
-						"FlipX": true,
-						"FlipY": true
-					},
 					{
 						"ObjectName": "DuMusstVerkehrtDrehen",
 						"ObjectDescId": "FixedA",

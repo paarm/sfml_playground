@@ -5,6 +5,7 @@ void Level::clearLevel() {
 	mObjectDescMap.clear();
 	mLayerList.clear();
 	mTextureManager.reset();
+	mLevelObjectNameNbPool=0;
 }
 
 void Level::setLevelName(const string &rLevelName) {
@@ -68,7 +69,6 @@ Layer& Level::getLayerByName(const string &rLayerName) {
 	return mEmptyLayer;
 }
 
-
 int Level::getLayerCount() {
 	return mLayerList.size();
 }
@@ -78,5 +78,9 @@ Layer& Level::getLayerFromIndex(int rIndex) {
 		return mLayerList[rIndex];
 	}
 	return mEmptyLayer;
+}
+
+int	Level::getNextLevelObjectNameNb() {
+	return mLevelObjectNameNbPool++;
 }
 

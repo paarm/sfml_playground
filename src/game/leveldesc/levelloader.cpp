@@ -427,8 +427,9 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 			for (auto *rJSONValueLayerObject : rLayerObjectsArray) {
 				string rObjectName=extractString(rJSONValueLayerObject, L"ObjectName");
 				if (rObjectName.empty()) {
-					cout << "Level.Layer.LayerObjects.ObjectName not found or empty" << endl;
-					continue;
+					rObjectName="__"+to_string(mLevel.getNextLevelObjectNameNb());
+					//cout << "Level.Layer.LayerObjects.ObjectName not found or empty" << endl;
+					//continue;
 				}
 				string rObjectDescId=extractString(rJSONValueLayerObject, L"ObjectDescId");
 				if (rObjectDescId.empty()) {
@@ -439,7 +440,6 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 					cout << "Level.Layer.LayerObjects.ObjectDescId " << rObjectDescId <<" is not available" << endl;
 					continue;
 				}
-
 				int rGridPosX=0;
 				int rGridPosY=0;
 				int rPosX=0;
@@ -448,7 +448,10 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				bool rGridPosYFound=extractNumberExistAsInt(rJSONValueLayerObject, L"GridPosY", &rGridPosY);
 				bool rPosXFound=extractNumberExistAsInt(rJSONValueLayerObject, L"PosX", &rPosX);
 				bool rPosYFound=extractNumberExistAsInt(rJSONValueLayerObject, L"PosY", &rPosY);
-
+				int rRepeatX=extractNumber(rJSONValueLayerObject, L"RepeatX");
+				if (rRepeatX<=0) {
+					rRepeatX=1;
+				}
 				if (!rGridPosXFound && !rPosXFound) {
 					cout << "Level.Layer.LayerObjects.PosX or GridPosX not found" << endl;
 					continue;
@@ -486,17 +489,23 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 					cout << "Level.Layer.LayerObjects duplicate ObjectName. ObjectName: " << rObjectName << endl;
 					continue;
 				}
-								
-				LayerObject& rLayerObject=rLayer.getOrAddLayerObject(rObjectName);
-				if (rLayerObject.isValid()) {
-					rLayerObject.setObjectDescId(rObjectDescId);
-					rLayerObject.setPosX(realPosX);
-					rLayerObject.setPosY(realPosY);
-					rLayerObject.setRotation(rRotation);
-					rLayerObject.setOriginFactorX(rOriginFactorX);
-					rLayerObject.setOriginFactorY(rOriginFactorY);
-					rLayerObject.setFlipX(rFlipX);
-					rLayerObject.setFlipY(rFlipY);
+				for(int r=0;r<rRepeatX;r++) {
+					string rObjectNameReal=rObjectName;
+					if (r>0) {
+						rObjectNameReal+=".r"+to_string(r);
+						realPosX+=rGridX;
+					}
+					LayerObject& rLayerObject=rLayer.getOrAddLayerObject(rObjectNameReal);
+					if (rLayerObject.isValid()) {
+						rLayerObject.setObjectDescId(rObjectDescId);
+						rLayerObject.setPosX(realPosX);
+						rLayerObject.setPosY(realPosY);
+						rLayerObject.setRotation(rRotation);
+						rLayerObject.setOriginFactorX(rOriginFactorX);
+						rLayerObject.setOriginFactorY(rOriginFactorY);
+						rLayerObject.setFlipX(rFlipX);
+						rLayerObject.setFlipY(rFlipY);
+					}
 				}
 			}
 		}
