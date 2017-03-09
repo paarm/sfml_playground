@@ -50,6 +50,7 @@ void LevelLoader::addLevelToNode(Node &rParentNode) {
 							rNode2d->setFlipX(rLayerObject.getFlipX());
 							rNode2d->setFlipY(rLayerObject.getFlipY());
 							rNode2d->setOriginFactor(rLayerObject.getOriginFactorX(), rLayerObject.getOriginFactorY());
+							rNode2d->setHint(rObjectDesc.getObjectHint());
 							int acount=rObjectDesc.getObjectSequenceCount();
 							for (int a=0;a<acount;a++) {
 								ObjectSequence &rObjectSequence=rObjectDesc.getObjectSequenceByIndex(a);
@@ -81,7 +82,7 @@ bool LevelLoader::parse(const string &rLevelName) {
 	//cout << rFileString <<endl;
 
 	JSONValue *rJSONValue=JSON::Parse(rFileString.c_str());
-	if (rJSONValue->IsObject()) {
+	if (rJSONValue && rJSONValue->IsObject()) {
 		rv=parseRoot(rJSONValue);
 	} 
 	return rv;
@@ -329,7 +330,7 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 				cout << "ObjectDescriptors.Id not found or empty" << endl;
 				continue;
 			}
-			string rObjectType=extractString(rJSONValue, L"ObjectType");
+			string rObjectHint=extractString(rJSONValue, L"ObjectHint");
 
 			string rDefaultFrame=extractString(rJSONValue, L"DefaultFrame");
 			//if (rDefaultFrame.empty()) {
@@ -346,7 +347,7 @@ bool LevelLoader::parseObjectDescriptors(JSONValue *rJSONValueParent) {
 				cout << "ObjectDescriptors.Id not found or empty" << endl;
 				continue;
 			}
-			rObjectDesc.setObjectType(rObjectType);
+			rObjectDesc.setObjectHint(rObjectHint);
 			rObjectDesc.setDefaultFrame(rDefaultFrame);
 
 			JSONValue *rObjectSequences=rJSONValue->Child(L"ObjectSequences");
@@ -423,6 +424,7 @@ bool LevelLoader::parseLevel(JSONValue *rJSONValueParent) {
 				cout << "Level.Layer.LayerObjects not found or not an Array" << endl;
 				break;;
 			}
+			
 			const JSONArray &rLayerObjectsArray=rLayerObjects->AsArray();
 			for (auto *rJSONValueLayerObject : rLayerObjectsArray) {
 				string rObjectName=extractString(rJSONValueLayerObject, L"ObjectName");

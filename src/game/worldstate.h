@@ -56,9 +56,9 @@ enum class Direction {
 
 class ObjectMoveable : public ObjectBase {
 private:
-	Gravity			mGravity;
-	Direction		mDirection;
-	bool 			mTouchGround;
+	Gravity			mGravity=Gravity::Bottom;
+	Direction		mDirection=Direction::Right;
+	bool 			mTouchGround=false;
 	float			mLastDeltaX=0.0;
 	float			mLastDeltaY=0.0;
 public:	
@@ -86,6 +86,8 @@ public:
 					mLastDeltaX=rDeltaX;
 
 					sf::FloatRect& oldPos=getLocation();
+					oldPos.left+=2.0;
+					oldPos.width-=4.0;
 					sf::FloatRect newPos=oldPos;
 					sf::FloatRect intersectionRect;
 					newPos.left=(newPos.left+getLastDeltaX());
@@ -108,8 +110,10 @@ public:
 					mNode2d->setPositionRelative(mLastDeltaX, 0.0);
 					if (mNode2d->getX()<0.0) {
 						mNode2d->setPosition(0.0, mNode2d->getY());
+						intersected=true;
 					} else if (mNode2d->getX()+mNode2d->getWidth()>GameDirector::getInstance().getVirtualScreenSizeX()) {
-						mNode2d->setPosition(0.0, GameDirector::getInstance().getVirtualScreenSizeX()-mNode2d->getWidth());
+						mNode2d->setPosition(GameDirector::getInstance().getVirtualScreenSizeX()-mNode2d->getWidth(), mNode2d->getY());
+						intersected=true;
 					}
 				}
 			}
@@ -135,6 +139,8 @@ public:
 					mLastDeltaY=rDeltaY;
 
 					sf::FloatRect& oldPos=getLocation();
+					oldPos.left+=2.0;
+					oldPos.width-=4.0;
 					sf::FloatRect newPos=oldPos;
 					sf::FloatRect intersectionRect;
 					newPos.top=(newPos.top+getLastDeltaY());
@@ -202,8 +208,18 @@ public:
 	void setGroundTouched(bool rGroundTouched) {
 		mTouchGround=rGroundTouched;
 	}
+	bool isGroundTouched() {
+		return mTouchGround;
+	}
 	void setDirection(Direction rDirection) {
 		mDirection=rDirection;
+	}
+	void switchDirection() {
+		if (mDirection==Direction::Left) {
+			mDirection=Direction::Right;
+		} else {
+			mDirection=Direction::Left;
+		}
 	}
 	Direction getDirection() {
 		return mDirection;
@@ -227,6 +243,17 @@ public:
 class EnemyObject : public ObjectMoveable {
 private:
 public:
+	EnemyObject(Node2d *rNode2d) {
+		mNode2d=rNode2d;
+	}
+};
+
+class JumpObject : public ObjectMoveable {
+private:
+public:
+	JumpObject(Node2d *rNode2d) {
+		mNode2d=rNode2d;
+	}
 };
 
 class PlayerObject : public ObjectMoveable {
@@ -238,6 +265,7 @@ class WorldState {
 private:
 	vector<FixedObject> mFixedObjectList;
 	vector<EnemyObject> mEnemyObjectList;
+	vector<JumpObject> mJumpObjectList;
 	PlayerObject 		mPlayerObject;
 	sf::FloatRect		mIntersectionRect;
 public:
@@ -246,6 +274,12 @@ public:
 	}
 	void addFixedObject(Node2d *rNode2d) {
 		mFixedObjectList.emplace_back(rNode2d);
+	}
+	void addEnemyObject(Node2d *rNode2d) {
+		mEnemyObjectList.emplace_back(rNode2d);
+	}
+	void addJumpObject(Node2d *rNode2d) {
+		mJumpObjectList.emplace_back(rNode2d);
 	}
 	void update(float deltaTime, bool keyLeft, bool keyRight, bool keyUp, bool keyDown, bool keyPick) {
 		if (keyLeft || keyRight) {
@@ -265,6 +299,38 @@ public:
 		}
 		mPlayerObject.moveTopBottom(deltaTime, GameDirector::getInstance().getPlayerSpeedTopBottomPerSecond(), mFixedObjectList);
 		mPlayerObject.resetMoveDeltas();
+		// move enemies
+		for (EnemyObject &rEnemyObject : mEnemyObjectList) {
+			bool hadLeftRightCollision=rEnemyObject.moveLeftRight(deltaTime, GameDirector::getInstance().getEnemyLeftRightSpeedPerSecond(), mFixedObjectList);
+			if (hadLeftRightCollision) {
+				rEnemyObject.switchDirection();
+			}
+			bool hadTopBottomCollision=rEnemyObject.moveTopBottom(deltaTime, GameDirector::getInstance().getEnemyTopBottomSpeedPerSecond(), mFixedObjectList);
+			rEnemyObject.resetMoveDeltas();
+			// test jump objects
+			if (rEnemyObject.isGroundTouched()) {
+				for (JumpObject &rJumpObject : mJumpObjectList) {
+					sf::FloatRect& rEnemyPos=rEnemyObject.getLocation();
+					sf::FloatRect intersectionRect;
+					if (rEnemyObject.getGravity()==Gravity::Bottom) {
+						rEnemyPos.top+=5.0;
+					} else {
+						rEnemyPos.top-=5.0;
+					}
+				
+					if (rJumpObject.getLocation().intersects(rEnemyPos,intersectionRect)) {
+						if (intersectionRect.width>25.0) {
+							if (rEnemyObject.getGravity()==Gravity::Bottom) {
+								rEnemyObject.changeGravityToTop();
+							} else {
+								rEnemyObject.changeGravityToBottom();
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 };
 

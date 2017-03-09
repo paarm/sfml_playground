@@ -8,17 +8,39 @@ GameScene::GameScene(const string& rLevelName) : Node(rLevelName) {
 void GameScene::init(const string &rLevelName) {
 	mLevelLoader.loadLevel(rLevelName);
 	mLevelLoader.addLevelToNode(*this);
-	Node2d* rNode2dPlayer=(Node2d*)this->searchNode("Player", true);
-	if (rNode2dPlayer) {
-		mWorldState.setPlayerObject(rNode2dPlayer);
-	}
-	Node* rNodePlayfield=(Node*)this->searchNode("Playfield", true);
-	if (rNodePlayfield) {
-		const vector<Node*>& rNodeList=rNodePlayfield->getChildNodeList();
+
+
+	Node* rNodePlayfieldLayer=(Node*)this->searchNode("PlayfieldLayer", true);
+	if (rNodePlayfieldLayer) {
+		const vector<Node*>& rNodeList=rNodePlayfieldLayer->getChildNodeList();
 		for (Node *rNode : rNodeList) {
 			if (rNode->getNodeType()==NodeType::Sprite) {
 				Node2d* rNode2dBlock=(Node2d*)rNode;
-				mWorldState.addFixedObject(rNode2dBlock);
+				if (rNode->getHint()=="Gravity") {
+					mWorldState.addJumpObject(rNode2dBlock);
+				} else {
+					mWorldState.addFixedObject(rNode2dBlock);
+				}
+			}
+		}
+	}
+	Node* rNodeEnemiesLayer=(Node*)this->searchNode("EnemiesLayer", true);
+	if (rNodeEnemiesLayer) {
+		const vector<Node*>& rNodeList=rNodeEnemiesLayer->getChildNodeList();
+		for (Node *rNode : rNodeList) {
+			if (rNode->getNodeType()==NodeType::Sprite && rNode->getHint()=="Enemy") {
+				Node2d* rNode2dEnemy=(Node2d*)rNode;
+				mWorldState.addEnemyObject(rNode2dEnemy);
+			}
+		}
+	}
+	Node* rNodePlayerLayer=(Node*)this->searchNode("PlayerLayer", true);
+	if (rNodePlayerLayer) {
+		const vector<Node*>& rNodeList=rNodePlayerLayer->getChildNodeList();
+		for (Node *rNode : rNodeList) {
+			if (rNode->getNodeType()==NodeType::Sprite && rNode->getHint()=="Player") {
+				Node2d* rNode2dPlayer=(Node2d*)rNode;
+				mWorldState.setPlayerObject(rNode2dPlayer);
 			}
 		}
 	}
@@ -98,7 +120,7 @@ void GameScene::doUpdate(float rDelta) {
 		cout << "Key Down" << endl;
 	}
 	mWorldState.update(rDelta, keyLeft, keyRight, keyUp, keyDown, false);
-
+#if 0
 	Node2d* rBackgroundLayer=(Node2d*)searchNode("DuMusstDichDrehen", true);
 	if (rBackgroundLayer) {
 		rBackgroundLayer->setOriginMiddle();
@@ -110,6 +132,7 @@ void GameScene::doUpdate(float rDelta) {
 		rBackgroundLayer->setRotationRelative((float)-500.0*rDelta/(float)1000.0);
 		//rBackgroundLayer->setPositionRelative((float)-20.0*rDelta/(float)1000.0, 0.0);
 	}
+#endif	
 	NodeText *s_text=(NodeText*)searchNode("FramesPerSecond", true);
 	if (s_text) {
 		s_text->setText(std::to_string((int)((1000.0/rDelta)))+" FPS");

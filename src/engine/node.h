@@ -29,6 +29,7 @@ class Node : NodeBase {
 private:
 	Node 	*mParentNode=nullptr;
 	string 	mName;
+	string 	mHint="";
 	bool 	mScheduledUpdate=false;
 	void 	initChildNodeList();
 protected:
@@ -55,6 +56,8 @@ public:
 	void scheduleUpdate(bool rScheduleUpdate) {
 		mScheduledUpdate=rScheduleUpdate;
 	}
+	void setHint(const string&rHint) {mHint=rHint;}
+	string& getHint() {return mHint;}
 	virtual NodeType getNodeType() override { return NodeType::Node;}
 	virtual void setTextureFrame(TextureFrame *rTextureFrame) override {}
 };

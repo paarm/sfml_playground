@@ -31,7 +31,7 @@ public:
 class ObjectDesc {
 private:
 	string 		mId;
-	string		mObjectType="";
+	string		mObjectHint="";
 	string		mDefaultFrame;
 	string 		mDefaultSequenceName;
 	vector<ObjectSequence> mObjectSequenceList;
@@ -43,8 +43,8 @@ public:
 	bool isValid() {
 		return !mId.empty();
 	}
-	void setObjectType(string rObjectType) {
-		mObjectType=rObjectType;
+	void setObjectHint(string rObjectHint) {
+		mObjectHint=rObjectHint;
 	}
 	void setDefaultFrame(string &rDefaultFrame) {
 		mDefaultFrame=rDefaultFrame;
@@ -85,8 +85,8 @@ public:
 	string& getId() {
 		return mId;
 	}
-	string& getObjectType() {
-		return mObjectType;
+	string& getObjectHint() {
+		return mObjectHint;
 	}
 	string& getDefaultFrame() {
 		return mDefaultFrame;
