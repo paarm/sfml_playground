@@ -86,7 +86,7 @@ void Director::runWithNode(Node *n) {
 		mIsRunning=true;
 		switchScene(n);
 		while (!quit) {
-			clock.tick();
+ 			clock.tick();
 			sf::Event e;
 			while (mWindowHandle.mSFL_Window->pollEvent(e)) {
 				if (e.type == sf::Event::Closed) {

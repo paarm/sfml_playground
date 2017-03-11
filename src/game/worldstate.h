@@ -17,6 +17,13 @@ public:
 		}
 		return sf::FloatRect();
 	}
+	sf::FloatRect getGlobalBounds() {
+		if (mNode2d) {
+			return mNode2d->getGlobalBounds();
+		}
+		return sf::FloatRect();
+	}
+#if 0	
 	sf::FloatRect& getLocation() {
 		if (mNode2d) {
 			mLocation.left=mNode2d->getX();
@@ -31,6 +38,7 @@ public:
 		}
 		return mLocation;
 	}
+#endif	
 };
 
 class FixedObject : public ObjectBase {
@@ -85,14 +93,14 @@ public:
 				if (rDeltaX!=0.0) {
 					mLastDeltaX=rDeltaX;
 
-					sf::FloatRect& oldPos=getLocation();
+					sf::FloatRect oldPos=getGlobalBounds();
 					oldPos.left+=2.0;
 					oldPos.width-=4.0;
 					sf::FloatRect newPos=oldPos;
 					sf::FloatRect intersectionRect;
 					newPos.left=(newPos.left+getLastDeltaX());
 					for(FixedObject& rFixedObject: rFixedObjectList) {
-						if (rFixedObject.getLocation().intersects(newPos,intersectionRect)) {
+						if (rFixedObject.getGlobalBounds().intersects(newPos,intersectionRect)) {
 							intersected=true;
 							if (getDirection()==Direction::Left) {
 								mLastDeltaX+=intersectionRect.width;
@@ -121,6 +129,18 @@ public:
 		return intersected;
 	}
 
+	void setPositionRelative(float rDeltaX, float rDeltaY) {
+		if (mNode2d) {
+			mNode2d->setPositionRelative(rDeltaX, rDeltaY);
+		}
+	}
+
+	void setPosition(float rX, float rY) {
+		if (mNode2d) {
+			mNode2d->setPosition(rX, rY);
+		}
+	}
+
 	bool moveTopBottom(float rDeltaTime, float rSpeedPerSecond, vector<FixedObject>& rFixedObjectList) {
 		bool intersected=false;
 		if (mNode2d) {
@@ -138,7 +158,7 @@ public:
 				if (rDeltaY!=0.0) {
 					mLastDeltaY=rDeltaY;
 
-					sf::FloatRect& oldPos=getLocation();
+					sf::FloatRect oldPos=getGlobalBounds();
 					oldPos.left+=2.0;
 					oldPos.width-=4.0;
 					sf::FloatRect newPos=oldPos;
@@ -146,7 +166,7 @@ public:
 					newPos.top=(newPos.top+getLastDeltaY());
 					// check all static objects for collision now
 					for(FixedObject& rFixedObject: rFixedObjectList) {
-						if (rFixedObject.getLocation().intersects(newPos,intersectionRect)) {
+						if (rFixedObject.getGlobalBounds().intersects(newPos,intersectionRect)) {
 							// ok have collision - remove the overlap from the move delta and continue with the oder static objects
 							intersected=true;
 							if (getGravity()==Gravity::Top) {
@@ -250,15 +270,47 @@ public:
 
 class JumpObject : public ObjectMoveable {
 private:
+	bool 	mPickable=false;
 public:
 	JumpObject(Node2d *rNode2d) {
 		mNode2d=rNode2d;
+	}
+	void setPickable(bool rPickable) {
+		mPickable=rPickable;
+	}
+	bool isPickable() {
+		return mPickable;
 	}
 };
 
 class PlayerObject : public ObjectMoveable {
 private:
+	JumpObject 	*mJumpObjectPicked=nullptr;
+	float		mPickedTimeDelayMs=0.0;
 public:
+	void setPickedGravity(JumpObject *rJumpObject) {
+		if (rJumpObject) {
+			mJumpObjectPicked=rJumpObject;
+			rJumpObject->setPosition(-1000.0,-1000.0);
+		} else {
+			mJumpObjectPicked=nullptr;
+		}
+		mPickedTimeDelayMs=300.0;
+	}
+	void updatePickedDelta(float rDeltaTime) {
+		if (mPickedTimeDelayMs>0.0) {
+			mPickedTimeDelayMs-=rDeltaTime;
+			if (mPickedTimeDelayMs<0.0) {
+				mPickedTimeDelayMs=0.0;
+			}
+		}
+	}
+	bool isPickedDelayTimeExpired() {
+		return mPickedTimeDelayMs<=0.0;
+	}
+	JumpObject*	getPickedGravity() {
+		return mJumpObjectPicked;
+	}
 };
 
 class WorldState {
@@ -278,9 +330,21 @@ public:
 	void addEnemyObject(Node2d *rNode2d) {
 		mEnemyObjectList.emplace_back(rNode2d);
 	}
-	void addJumpObject(Node2d *rNode2d) {
+	void addJumpObject(Node2d *rNode2d, bool rPickable) {
 		mJumpObjectList.emplace_back(rNode2d);
+		mJumpObjectList.back().setPickable(rPickable);
 	}
+
+	bool intersectWithFixedObject(sf::FloatRect &rTestRect, sf::FloatRect &intersectionRect) {
+		bool rv=false;
+		for(FixedObject& rFixedObject: mFixedObjectList) {
+			if (rFixedObject.getGlobalBounds().intersects(rTestRect,intersectionRect)) {
+				rv=true;
+			}
+		}
+		return rv;
+	}
+
 	void update(float deltaTime, bool keyLeft, bool keyRight, bool keyUp, bool keyDown, bool keyPick) {
 		if (keyLeft || keyRight) {
 			if (keyLeft) {
@@ -291,7 +355,6 @@ public:
 			}
 			mPlayerObject.moveLeftRight(deltaTime, GameDirector::getInstance().getPlayerSpeedLeftRightPerSecond(), mFixedObjectList);
 		}
-
 		if (keyUp) {
 			mPlayerObject.changeGravityToTop();
 		} else if (keyDown) {
@@ -299,6 +362,63 @@ public:
 		}
 		mPlayerObject.moveTopBottom(deltaTime, GameDirector::getInstance().getPlayerSpeedTopBottomPerSecond(), mFixedObjectList);
 		mPlayerObject.resetMoveDeltas();
+		
+
+		// pick up a gravity block or lay it down
+		mPlayerObject.updatePickedDelta(deltaTime);
+		if (keyPick && mPlayerObject.isGroundTouched()) {
+			sf::FloatRect rPlayerPos=mPlayerObject.getGlobalBounds();
+			if (mPlayerObject.getGravity()==Gravity::Bottom) {
+				rPlayerPos.top+=5.0;
+			} else {
+				rPlayerPos.top-=5.0;
+			}
+			if (mPlayerObject.isPickedDelayTimeExpired()) {
+				if (!mPlayerObject.getPickedGravity()) {
+					for (JumpObject &rJumpObject : mJumpObjectList) {
+						// only allowed to pick a gravity block if it is allowed to pick this block
+						if (rJumpObject.isPickable()) {
+							sf::FloatRect intersectionRect;
+							sf::FloatRect rJumpObjectLocation=rJumpObject.getGlobalBounds();
+							float rJumpObjectWidht=rJumpObject.getLocalBounds().width;
+							if (rJumpObjectLocation.intersects(rPlayerPos,intersectionRect)) {
+								if (intersectionRect.width>rJumpObjectWidht*0.6) {
+									// player stands on a gravity block at least 60 percent -> pick it up
+									mPlayerObject.setPickedGravity(&rJumpObject);
+								}
+							}
+						}
+					}
+				} else {
+					JumpObject *rJumpObject=mPlayerObject.getPickedGravity();
+					if (rJumpObject) {
+						sf::FloatRect rJumpObjLocals=mPlayerObject.getLocalBounds();
+						sf::FloatRect rPlayerPos=mPlayerObject.getGlobalBounds();
+						// init pos x with the middle of the players x location
+						int rNewPosX=(int)(rPlayerPos.left+rPlayerPos.width/2.0);
+						// snap to grid 
+						rNewPosX-=rNewPosX%(int)rJumpObjLocals.width;
+						float rNewPosY=0.0;
+						if (mPlayerObject.getGravity()==Gravity::Bottom) {
+							// pos y is next to the bottom of the player
+							rNewPosY=rPlayerPos.top+rPlayerPos.height;
+						} else {
+							// pox y is next to the y location of the player minus the gravity block y size 
+							rNewPosY=rPlayerPos.top-rJumpObjLocals.height;
+						}
+						rJumpObjLocals.left=(float)rNewPosX;
+						rJumpObjLocals.top=rNewPosY;
+						sf::FloatRect intersectionRect;
+						// check if there is really a fixed object behind the new location of the gravity block
+						if (intersectWithFixedObject(rJumpObjLocals, intersectionRect)) {
+							rJumpObject->setPosition(rNewPosX,rNewPosY);
+							mPlayerObject.setPickedGravity(nullptr);
+						}
+					}
+				}
+			}
+		}
+
 		// move enemies
 		for (EnemyObject &rEnemyObject : mEnemyObjectList) {
 			bool hadLeftRightCollision=rEnemyObject.moveLeftRight(deltaTime, GameDirector::getInstance().getEnemyLeftRightSpeedPerSecond(), mFixedObjectList);
@@ -310,7 +430,7 @@ public:
 			// test jump objects
 			if (rEnemyObject.isGroundTouched()) {
 				for (JumpObject &rJumpObject : mJumpObjectList) {
-					sf::FloatRect& rEnemyPos=rEnemyObject.getLocation();
+					sf::FloatRect rEnemyPos=rEnemyObject.getGlobalBounds();
 					sf::FloatRect intersectionRect;
 					if (rEnemyObject.getGravity()==Gravity::Bottom) {
 						rEnemyPos.top+=5.0;
@@ -318,8 +438,16 @@ public:
 						rEnemyPos.top-=5.0;
 					}
 				
-					if (rJumpObject.getLocation().intersects(rEnemyPos,intersectionRect)) {
-						if (intersectionRect.width>25.0) {
+					float rJumpObjectWidht=rJumpObject.getLocalBounds().width;
+					float rEnemyObjectWidth=rEnemyObject.getLocalBounds().width;
+					sf::FloatRect rJumpObjectLocation=rJumpObject.getGlobalBounds();
+					if (rJumpObjectLocation.intersects(rEnemyPos,intersectionRect)) {
+						if (intersectionRect.width>rJumpObjectWidht*0.9) {
+							float snappedX=rJumpObjectLocation.left+rJumpObjectWidht/2.0-rEnemyObjectWidth/2.0;
+							if (snappedX!=rEnemyPos.left) {
+								rEnemyObject.setPositionRelative(snappedX-rEnemyPos.left, 0.0);
+							}
+							
 							if (rEnemyObject.getGravity()==Gravity::Bottom) {
 								rEnemyObject.changeGravityToTop();
 							} else {
@@ -333,5 +461,6 @@ public:
 		}
 	}
 };
+
 
 

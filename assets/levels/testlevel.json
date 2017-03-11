@@ -100,6 +100,11 @@
 			"ObjectHint":			"Gravity"
 		},
 		{
+			"ObjectDescId":			"GravityPickable",
+			"DefaultFrame":			"Gravity",
+			"ObjectHint":			"GravityPickable"
+		},
+		{
 			"ObjectDescId":			"FakelA",
 			"DefaultFrame":			"Fakel.Burn0",
 			"DefaultSequence": 		"Fakel.Burn",
@@ -277,8 +282,27 @@
 					},
 					{
 						"ObjectName": "",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 14,
+						"GridPosY": 15
+					},
+					{
+						"ObjectName": "",
+						"ObjectDescId": "MauerA",
+						"GridPosX": 16,
+						"GridPosY": 15
+					},
+
+					{
+						"ObjectName": "",
 						"ObjectDescId": "GravityA",
 						"GridPosX": 15,
+						"GridPosY": 19
+					},
+					{
+						"ObjectName": "",
+						"ObjectDescId": "GravityPickable",
+						"GridPosX": 19,
 						"GridPosY": 19
 					}
 				]				
@@ -320,6 +344,12 @@
 						"ObjectDescId": "EnemyA",
 						"GridPosX": 33,
 						"GridPosY": 1
+					},
+					{
+						"ObjectName": "Enemy4",
+						"ObjectDescId": "EnemyA",
+						"GridPosX": 1,
+						"GridPosY": 2
 					}
 	
 				]

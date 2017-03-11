@@ -16,8 +16,8 @@ void GameScene::init(const string &rLevelName) {
 		for (Node *rNode : rNodeList) {
 			if (rNode->getNodeType()==NodeType::Sprite) {
 				Node2d* rNode2dBlock=(Node2d*)rNode;
-				if (rNode->getHint()=="Gravity") {
-					mWorldState.addJumpObject(rNode2dBlock);
+				if (rNode->getHint()=="Gravity" || rNode->getHint()=="GravityPickable") {
+					mWorldState.addJumpObject(rNode2dBlock, rNode->getHint()=="GravityPickable");
 				} else {
 					mWorldState.addFixedObject(rNode2dBlock);
 				}
@@ -103,6 +103,7 @@ void GameScene::doUpdate(float rDelta) {
 	bool keyRight=false;
 	bool keyUp=false;
 	bool keyDown=false;
+	bool keySpace=false;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 		keyLeft=true;
 		cout << "Key Left" << endl;
@@ -119,7 +120,11 @@ void GameScene::doUpdate(float rDelta) {
 		keyDown=true;
 		cout << "Key Down" << endl;
 	}
-	mWorldState.update(rDelta, keyLeft, keyRight, keyUp, keyDown, false);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+		keySpace=true;
+		cout << "Key space" << endl;
+	}
+	mWorldState.update(rDelta, keyLeft, keyRight, keyUp, keyDown, keySpace);
 #if 0
 	Node2d* rBackgroundLayer=(Node2d*)searchNode("DuMusstDichDrehen", true);
 	if (rBackgroundLayer) {
